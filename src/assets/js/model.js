@@ -46,7 +46,16 @@ class GCCIModel {
      * @return {Array} an array of nodes
      */
     static getTree() {
+        let list = [];
 
+        for (let n of this.nodes) {
+            if (getDepth(n.path) === 1) {
+                dfs(n, list);
+                break;
+            }
+        }
+
+        return list;
     }
 
     /**
@@ -353,5 +362,16 @@ class GCCIModel {
      */
     static indexToPath(index) {
         return (10000 + index).toString().substr(1);
+    }
+
+    /**
+     * Helper
+     * Depth First Search
+     */
+    static dfs(node, list) {
+        list.push(node);
+        for (let n of getChildren(node)) {
+            dfs(n, list);
+        }
     }
 }
