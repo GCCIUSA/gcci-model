@@ -145,24 +145,26 @@ class GCCIModel {
             ""
         ];
 
+        // shift target's siblings
         if (pos === "first") {
             newNodePath = parentPath + indexToPath(1);
             for (let s of siblings) {
-                updatePath(s, shiftPath(s.path, 1));
+                updatePath(s, calcNewPath(s.path, 1));
             }
         }
         else if (pos === "last") {
             newNodePath = parentPath + indexToPath(siblings.length + 1);
         }
         else if (pos === "left" || pos === "right") {
-            newNodePath = pos === "left" ? target.path : shiftPath(target.path, 1);
+            newNodePath = pos === "left" ? target.path : calcNewPath(target.path, 1);
             for (let s of siblings) {
                 if (getPathIndex(s.path) >= getPathIndex(newNodePath)) {
-                    updatePath(s, shiftPath(s.path, 1));
+                    updatePath(s, calcNewPath(s.path, 1));
                 }
             }
         }
 
+        // insert new node
         if (newNodePath !== "") {
             this.rootRef.push().set({
                 "title": data.title,
@@ -195,7 +197,7 @@ class GCCIModel {
         // update path of its right siblings
         for (let s of siblings) {
             if (getPathIndex(s.path) > pathIndex) {
-                updatePath(s, shiftPath(s.path, -1));
+                updatePath(s, calcNewPath(s.path, -1));
             }
         }
     }
@@ -207,7 +209,40 @@ class GCCIModel {
      * @param pos - possible values are: child, left, right
      */
     static move(node, target, pos) {
+        let [oPath, oSiblings] = [
+            node.path,
+            getSiblings(node)
+        ];
 
+        // check if move to an invalid target
+        for (let d of getDescendants(node)) {
+            if (d.id === target.id) {
+                throw "Cannot move node to one of its descendants."
+            }
+        }
+
+        // insert node to new location
+        if (pos === "child") {
+            let newPath = target.path + indexToPath(getChildren(target).length + 1);
+            updatePath(node, newPath);
+        }
+        else if (pos === "left" || pos === "right") {
+            let newPath = pos === "left" ? target.path : calcNewPath(target.path, 1);
+            updatePath(node, newPath);
+
+            for (let s of getSiblings(target)) {
+                if (getPathIndex(s.path) >= getPathIndex(newNodePath)) {
+                    updatePath(s, calcNewPath(s.path, 1));
+                }
+            }
+        }
+
+        // shift node's original location's siblings
+        for (let s of oSiblings) {
+            if (getPathIndex(s.path) > getPathIndex(oPath)) {
+                updatePath(s, calcNewPath(s.path, -1));
+            }
+        }
     }
 
 
@@ -215,8 +250,8 @@ class GCCIModel {
      * Helper
      * Shift given path with specific step
      */
-    static shiftPath(path, step) {
-        return path.substr(0, path.length - 4) + indexToPath((getPathIndex(path) + step));
+    static calcNewPath(path, shift) {
+        return path.substr(0, path.length - 4) + indexToPath((getPathIndex(path) + shift));
     }
 
     /**
