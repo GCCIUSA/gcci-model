@@ -25,18 +25,36 @@ class GCCIModel {
 
             if (nodeObjs !== null) {
                 for (let key of Object.keys(nodeObjs)) {
-                    this.nodes.push(nodeObjs[key]);
+                    let data = nodeObjs[key];
+                    data[id] = key;
+                    this.nodes.push(data);
                 }
             }
-
-            this.rootRef.off("value");
         });
     }
 
+    static getTree() {
+
+    }
+
+    /**
+     * Gets node by given node's id
+     * @param id - given node's id
+     * @returns {Object} node if found, else undefined
+     */
     static getNodeById(id) {
         return this.nodes.find(x => x.id === id);
     }
 
+    static getRefById(id) {
+        return this.rootRef.orderByKey().equalTo(id).ref();
+    }
+
+    /**
+     * Gets the children nodes of the given node.
+     * @param node - given node
+     * @returns {Array} - children nodes
+     */
     static getChildren(node) {
         let children = [];
 
@@ -49,11 +67,16 @@ class GCCIModel {
         return children;
     }
 
+    /**
+     * Gets the descendants nodes of the give node.
+     * @param node - given node
+     * @returns {Array} - descendants nodes
+     */
     static getDescendants(node) {
         let descendants = [];
 
         for (let n of this.nodes) {
-            if (n.path.substr(0, node.path.length) === node.path) {
+            if (n.path.substr(0, node.path.length) === node.path && n.depth > node.depth) {
                 descendants.push(n);
             }
         }
@@ -63,6 +86,8 @@ class GCCIModel {
 
     /**
      * Gets the parent node of the given node.
+     * @param node - given node
+     * @returns {Object} - parent node
      */
     static getParent(node) {
         let parentPath = getParentPath(node);
@@ -71,7 +96,9 @@ class GCCIModel {
     }
 
     /**
-     * Gets the sibling nodes of the given node.
+     * Gets the siblings nodes of the given node.
+     * @param node - given node
+     * @returns {Array} - siblings nodes
      */
     static getSiblings(node) {
         let siblings = [],
@@ -91,9 +118,11 @@ class GCCIModel {
      * Adds a new node as a child to the given node.
      * The new node will be the new rightmost child.
      * If you want to insert a node at a specific position, use the addSibling() method.
+     * @param target - target node
+     * @param data - new node's data
      */
-    static addChild(node, data) {
-        let childPath = node.path + indexToString(getChildren(node).length + 1);
+    static addChild(target, data) {
+        let childPath = target.path + indexToPath(getChildren(target).length + 1);
 
         this.rootRef.push().set({
             "title": data.title,
@@ -104,32 +133,41 @@ class GCCIModel {
     }
 
     /**
-     * Adds a new node as a sibling to the given node object.
-     * possible values of pos: 'first', 'last', 'left', 'right'
+     * Adds a new node as a sibling to the target node object.
+     * @param target - target node
+     * @param pos - possible values are: first, last, left, right
+     * @param data - new node's data
      */
-    static addSibling(node, pos, data) {
-        let siblings = getSiblings(node),
-            parentPath = getParentPath(node),
-            siblingPath = "";
+    static addSibling(target, pos, data) {
+        let [siblings, parentPath, newNodePath] = [
+            getSiblings(target),
+            getParentPath(target),
+            ""
+        ];
 
         if (pos === "first") {
-            siblingPath = parentPath + indexToString(1);
+            newNodePath = parentPath + indexToPath(1);
+            for (let s of siblings) {
+                updatePath(s, shiftPath(s.path, 1));
+            }
         }
         else if (pos === "last") {
-            siblingPath = parentPath + indexToString(siblings.length + 1);
+            newNodePath = parentPath + indexToPath(siblings.length + 1);
         }
-        else if (pos === "left") {
-            siblingPath = node.path;
-        }
-        else if (pos === "right") {
-            siblingPath = parentPath +  indexToString(getPathIndex(node.path) + 1);
+        else if (pos === "left" || pos === "right") {
+            newNodePath = pos === "left" ? target.path : shiftPath(target.path, 1);
+            for (let s of siblings) {
+                if (getPathIndex(s.path) >= getPathIndex(newNodePath)) {
+                    updatePath(s, shiftPath(s.path, 1));
+                }
+            }
         }
 
-        if (siblingPath !== "") {
+        if (newNodePath !== "") {
             this.rootRef.push().set({
                 "title": data.title,
                 "uid": data.uid,
-                "path": siblingPath,
+                "path": newNodePath,
                 "depth": node.depth
             });
         }
@@ -138,8 +176,61 @@ class GCCIModel {
         }
     }
 
-    static removeNode(id) {
+    /**
+     * Removes the given node and all it’s descendants.
+     * @param node - given node
+     */
+    static remove(node) {
+        let [descendants, siblings, pathIndex] = [
+            getDescendants(node),
+            getSiblings(node),
+            getPathIndex(node.path)
+        ];
 
+        for (let d of descendants) {
+            getRefById(d.id).remove();
+        }
+        getRefById(node.id).remove();
+
+        // update path of its right siblings
+        for (let s of siblings) {
+            if (getPathIndex(s.path) > pathIndex) {
+                updatePath(s, shiftPath(s.path, -1));
+            }
+        }
+    }
+
+    /**
+     * Moves the given node and all it’s descendants to a new position relative to another node.
+     * @param node - given node
+     * @param target - target node
+     * @param pos - possible values are: child, left, right
+     */
+    static move(node, target, pos) {
+
+    }
+
+
+    /**
+     * Helper
+     * Shift given path with specific step
+     */
+    static shiftPath(path, step) {
+        return path.substr(0, path.length - 4) + indexToPath((getPathIndex(path) + step));
+    }
+
+    /**
+     * Helper
+     * Updates the path of the given node and all of its descendants
+     */
+    static updatePath(node, newPath) {
+        let descendants = getDescendants(node);
+
+        for (let d of descendants) {
+            let dNewPath = newPath + d.path.substr(node.path.length);
+            getRefById(d.id).update({ path: dNewPath, depth: dNewPath / 4});
+        }
+        getRefById(node.id).update({ path: newPath, depth: newPath / 4 });
     }
 
     /**
@@ -153,7 +244,7 @@ class GCCIModel {
     /**
      * Helper
      * Gets index at given depth.
-     * If no depth specified, gets, rightmost index
+     * If no depth specified, gets rightmost index
      */
     static getPathIndex(path, depth) {
         if (depth) {
@@ -166,7 +257,7 @@ class GCCIModel {
      * Helper
      * Converts index to path format
      */
-    static indexToString(index) {
+    static indexToPath(index) {
         return (10000 + index).toString().substr(1);
     }
 }
