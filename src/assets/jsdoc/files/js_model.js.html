@@ -1,3 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>js\model.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/GCCIModel.html">GCCIModel</a></li>
+                            </ul>
+                
+                
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: js\model.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
 /**
  * ------------------------------------------
  * Name:    GCCI Model Script
@@ -19,14 +101,14 @@
  */
 class GCCIModel {
     constructor() {
-        this.rootRef = new Firebase("https://gcci-model.firebaseio.com/");
+        this.rootRef = new Firebase(&quot;https://gcci-model.firebaseio.com/&quot;);
         this.nodes = [];
 
         this.init();
     }
 
     init() {
-        this.rootRef.on("value", (snapshot) => {
+        this.rootRef.on(&quot;value&quot;, (snapshot) =&gt; {
             let nodeObjs = snapshot.val();
 
             if (nodeObjs !== null) {
@@ -79,7 +161,7 @@ class GCCIModel {
         let descendants = [];
 
         for (let n of this.nodes) {
-            if (getPathAtDepth(n.path, getDepth(node.path)) === node.path && getDepth(n.path) > getDepth(node.path)) {
+            if (getPathAtDepth(n.path, getDepth(node.path)) === node.path &amp;&amp; getDepth(n.path) &gt; getDepth(node.path)) {
                 descendants.push(n);
             }
         }
@@ -97,7 +179,7 @@ class GCCIModel {
     static getParent(node) {
         let parentPath = getParentPath(node);
 
-        return this.nodes.find(x => x.path === parentPath);
+        return this.nodes.find(x =&gt; x.path === parentPath);
     }
 
     /**
@@ -116,7 +198,7 @@ class GCCIModel {
                 siblings.push(n);
             }
         }
-        siblings.sort((a, b) => a.path.localeCompare(b.path));
+        siblings.sort((a, b) =&gt; a.path.localeCompare(b.path));
 
         return siblings;
     }
@@ -128,15 +210,15 @@ class GCCIModel {
      *
      * @method addChild
      * @param {Object} target target node
-     * @param {Object} data new node's data
+     * @param {Object} data new node&#x27;s data
      */
     static addChild(target, data) {
         let childPath = calcPathAppend(target.path, indexToPath(getChildren(target).length + 1));
 
         this.rootRef.push().set({
-            "title": data.title,
-            "uid": data.uid,
-            "path": childPath
+            &quot;title&quot;: data.title,
+            &quot;uid&quot;: data.uid,
+            &quot;path&quot;: childPath
         });
     }
 
@@ -146,44 +228,44 @@ class GCCIModel {
      * @method addSibling
      * @param {Object} target target node
      * @param {String} pos possible values are: first, last, left, right
-     * @param {Object} data new node's data
+     * @param {Object} data new node&#x27;s data
      */
     static addSibling(target, pos, data) {
         let [siblings, parentPath, newNodePath] = [
             getSiblings(target),
             getParentPath(target),
-            ""
+            &quot;&quot;
         ];
 
-        // shift target's siblings
-        if (pos === "first") {
+        // shift target&#x27;s siblings
+        if (pos === &quot;first&quot;) {
             newNodePath = calcPathAppend(parentPath, indexToPath(1));
             for (let s of siblings) {
                 updatePath(s, calcPathShift(s.path, 1));
             }
         }
-        else if (pos === "last") {
+        else if (pos === &quot;last&quot;) {
             newNodePath = calcPathAppend(parentPath + indexToPath(siblings.length + 1));
         }
-        else if (pos === "left" || pos === "right") {
-            newNodePath = pos === "left" ? target.path : calcPathShift(target.path, 1);
+        else if (pos === &quot;left&quot; || pos === &quot;right&quot;) {
+            newNodePath = pos === &quot;left&quot; ? target.path : calcPathShift(target.path, 1);
             for (let s of siblings) {
-                if (getPathIndex(s.path) >= getPathIndex(newNodePath)) {
+                if (getPathIndex(s.path) &gt;= getPathIndex(newNodePath)) {
                     updatePath(s, calcPathShift(s.path, 1));
                 }
             }
         }
 
         // insert new node
-        if (newNodePath !== "") {
+        if (newNodePath !== &quot;&quot;) {
             this.rootRef.push().set({
-                "title": data.title,
-                "uid": data.uid,
-                "path": newNodePath
+                &quot;title&quot;: data.title,
+                &quot;uid&quot;: data.uid,
+                &quot;path&quot;: newNodePath
             });
         }
         else {
-            throw "Invalid path";
+            throw &quot;Invalid path&quot;;
         }
     }
 
@@ -207,7 +289,7 @@ class GCCIModel {
 
         // update path of its right siblings
         for (let s of siblings) {
-            if (getPathIndex(s.path) > pathIndex) {
+            if (getPathIndex(s.path) &gt; pathIndex) {
                 updatePath(s, calcPathShift(s.path, -1));
             }
         }
@@ -230,29 +312,29 @@ class GCCIModel {
         // check if move to an invalid target
         for (let d of getDescendants(node)) {
             if (d.id === target.id) {
-                throw "Cannot move node to one of its descendants."
+                throw &quot;Cannot move node to one of its descendants.&quot;
             }
         }
 
         // insert node to new location
-        if (pos === "child") {
+        if (pos === &quot;child&quot;) {
             let newPath = calcPathAppend(target.path, indexToPath(getChildren(target).length + 1));
             updatePath(node, newPath);
         }
-        else if (pos === "left" || pos === "right") {
-            let newPath = pos === "left" ? target.path : calcPathShift(target.path, 1);
+        else if (pos === &quot;left&quot; || pos === &quot;right&quot;) {
+            let newPath = pos === &quot;left&quot; ? target.path : calcPathShift(target.path, 1);
             updatePath(node, newPath);
 
             for (let s of getSiblings(target)) {
-                if (getPathIndex(s.path) >= getPathIndex(newNodePath)) {
+                if (getPathIndex(s.path) &gt;= getPathIndex(newNodePath)) {
                     updatePath(s, calcPathShift(s.path, 1));
                 }
             }
         }
 
-        // shift node's original location's siblings
+        // shift node&#x27;s original location&#x27;s siblings
         for (let s of oSiblings) {
-            if (getPathIndex(s.path) > getPathIndex(oPath)) {
+            if (getPathIndex(s.path) &gt; getPathIndex(oPath)) {
                 updatePath(s, calcPathShift(s.path, -1));
             }
         }
@@ -263,18 +345,18 @@ class GCCIModel {
 
     /**
      * Helper
-     * Gets node by given node's id.
-     * @param id - given node's id
+     * Gets node by given node&#x27;s id.
+     * @param id - given node&#x27;s id
      * @returns {Object} node if found, else undefined
      */
     static getNodeById(id) {
-        return this.nodes.find(x => x.id === id);
+        return this.nodes.find(x =&gt; x.id === id);
     }
 
     /**
      * Helper
-     * Gets firebase reference by given node's id.
-     * @param id - given node's id
+     * Gets firebase reference by given node&#x27;s id.
+     * @param id - given node&#x27;s id
      * @returns {Object} firebase reference if found, else null
      */
     static getRefById(id) {
@@ -329,7 +411,7 @@ class GCCIModel {
 
     /**
      * Helper
-     * Gets parent's path value of the given node.
+     * Gets parent&#x27;s path value of the given node.
      */
     static getParentPath(node) {
         return node.path.substr(0, node.path.length - 4);
@@ -355,3 +437,21 @@ class GCCIModel {
         return (10000 + index).toString().substr(1);
     }
 }
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

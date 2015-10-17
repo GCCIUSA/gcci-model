@@ -1,0 +1,361 @@
+{
+    "project": {},
+    "files": {
+        "js\\model.js": {
+            "name": "js\\model.js",
+            "modules": {},
+            "classes": {
+                "GCCIModel": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "GCCIModel": {
+            "name": "GCCIModel",
+            "shortname": "GCCIModel",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js\\model.js",
+            "line": 15,
+            "description": "GCCI Model"
+        }
+    },
+    "elements": {},
+    "classitems": [
+        {
+            "file": "js\\model.js",
+            "line": 1,
+            "description": "------------------------------------------\nName:    GCCI Model Script\nVersion: 1.0.0\nAuthor:  PZ\nDate:    2015-10-15\n------------------------------------------\n\nChange Log:\n\n1.0.0 (2015-10-15)\n- added basic model structure",
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 42,
+            "description": "Gets tree data structure with DFS.",
+            "itemtype": "method",
+            "name": "getTree",
+            "return": {
+                "description": "an array of nodes",
+                "type": "Array"
+            },
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 52,
+            "description": "Gets the children nodes of the given node.",
+            "itemtype": "method",
+            "name": "getChildren",
+            "params": [
+                {
+                    "name": "node",
+                    "description": "given node",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "children nodes",
+                "type": "Array"
+            },
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 71,
+            "description": "Gets the descendants nodes of the give node.",
+            "itemtype": "method",
+            "name": "getDescendants",
+            "params": [
+                {
+                    "name": "node",
+                    "description": "given node",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "descendants nodes",
+                "type": "Array"
+            },
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 90,
+            "description": "Gets the parent node of the given node.",
+            "itemtype": "method",
+            "name": "getParent",
+            "params": [
+                {
+                    "name": "node",
+                    "description": "given node",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "parent node",
+                "type": "Object"
+            },
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 103,
+            "description": "Gets the siblings nodes of the given node.",
+            "itemtype": "method",
+            "name": "getSiblings",
+            "params": [
+                {
+                    "name": "node",
+                    "description": "given node",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "siblings nodes",
+                "type": "Array"
+            },
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 124,
+            "description": "Adds a new node as a child to the given node.\nThe new node will be the new rightmost child.\nIf you want to insert a node at a specific position, use the addSibling() method.",
+            "itemtype": "method",
+            "name": "addChild",
+            "params": [
+                {
+                    "name": "target",
+                    "description": "target node",
+                    "type": "Object"
+                },
+                {
+                    "name": "data",
+                    "description": "new node's data",
+                    "type": "Object"
+                }
+            ],
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 143,
+            "description": "Adds a new node as a sibling to the target node object.",
+            "itemtype": "method",
+            "name": "addSibling",
+            "params": [
+                {
+                    "name": "target",
+                    "description": "target node",
+                    "type": "Object"
+                },
+                {
+                    "name": "pos",
+                    "description": "possible values are: first, last, left, right",
+                    "type": "String"
+                },
+                {
+                    "name": "data",
+                    "description": "new node's data",
+                    "type": "Object"
+                }
+            ],
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 190,
+            "description": "Removes the given node and all its descendants.",
+            "itemtype": "method",
+            "name": "remove",
+            "params": [
+                {
+                    "name": "node",
+                    "description": "given node",
+                    "type": "Object"
+                }
+            ],
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 216,
+            "description": "Moves the given node and all its descendants to a new position relative to another node.",
+            "itemtype": "method",
+            "name": "move",
+            "params": [
+                {
+                    "name": "node",
+                    "description": "given node",
+                    "type": "Object"
+                },
+                {
+                    "name": "target",
+                    "description": "target node",
+                    "type": "Object"
+                },
+                {
+                    "name": "pos",
+                    "description": "possible values are: child, left, right",
+                    "type": "String"
+                }
+            ],
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 264,
+            "description": "Helper\nGets node by given node's id.",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "- given node's id"
+                }
+            ],
+            "return": {
+                "description": "node if found, else undefined",
+                "type": "Object"
+            },
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 274,
+            "description": "Helper\nGets firebase reference by given node's id.",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "- given node's id"
+                }
+            ],
+            "return": {
+                "description": "firebase reference if found, else null",
+                "type": "Object"
+            },
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 284,
+            "description": "Helper\nCalculates path by shifting given path with specific step.",
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 292,
+            "description": "Helper\nCalculates path by appending a path to a given one.",
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 300,
+            "description": "Helper\nGets depth of given path.",
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 308,
+            "description": "Helper\nGets path at a depth.",
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 316,
+            "description": "Helper\nUpdates the path of the given node and all of its descendants.",
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 330,
+            "description": "Helper\nGets parent's path value of the given node.",
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 338,
+            "description": "Helper\nGets index at given depth.\nIf no depth specified, gets rightmost index.",
+            "class": "GCCIModel"
+        },
+        {
+            "file": "js\\model.js",
+            "line": 350,
+            "description": "Helper\nConverts index to path format.",
+            "class": "GCCIModel"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " js\\model.js:52"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " js\\model.js:71"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " js\\model.js:90"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " js\\model.js:103"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " js\\model.js:264"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " js\\model.js:274"
+        },
+        {
+            "message": "Missing item type\n------------------------------------------\nName:    GCCI Model Script\nVersion: 1.0.0\nAuthor:  PZ\nDate:    2015-10-15\n------------------------------------------\n\nChange Log:\n\n1.0.0 (2015-10-15)\n- added basic model structure",
+            "line": " js\\model.js:1"
+        },
+        {
+            "message": "Missing item type\nHelper\nGets node by given node's id.",
+            "line": " js\\model.js:264"
+        },
+        {
+            "message": "Missing item type\nHelper\nGets firebase reference by given node's id.",
+            "line": " js\\model.js:274"
+        },
+        {
+            "message": "Missing item type\nHelper\nCalculates path by shifting given path with specific step.",
+            "line": " js\\model.js:284"
+        },
+        {
+            "message": "Missing item type\nHelper\nCalculates path by appending a path to a given one.",
+            "line": " js\\model.js:292"
+        },
+        {
+            "message": "Missing item type\nHelper\nGets depth of given path.",
+            "line": " js\\model.js:300"
+        },
+        {
+            "message": "Missing item type\nHelper\nGets path at a depth.",
+            "line": " js\\model.js:308"
+        },
+        {
+            "message": "Missing item type\nHelper\nUpdates the path of the given node and all of its descendants.",
+            "line": " js\\model.js:316"
+        },
+        {
+            "message": "Missing item type\nHelper\nGets parent's path value of the given node.",
+            "line": " js\\model.js:330"
+        },
+        {
+            "message": "Missing item type\nHelper\nGets index at given depth.\nIf no depth specified, gets rightmost index.",
+            "line": " js\\model.js:338"
+        },
+        {
+            "message": "Missing item type\nHelper\nConverts index to path format.",
+            "line": " js\\model.js:350"
+        }
+    ]
+}
