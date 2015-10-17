@@ -52,7 +52,7 @@
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 52,
+            "line": 61,
             "description": "Gets the children nodes of the given node.",
             "itemtype": "method",
             "name": "getChildren",
@@ -71,7 +71,7 @@
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 71,
+            "line": 80,
             "description": "Gets the descendants nodes of the give node.",
             "itemtype": "method",
             "name": "getDescendants",
@@ -90,7 +90,7 @@
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 90,
+            "line": 99,
             "description": "Gets the parent node of the given node.",
             "itemtype": "method",
             "name": "getParent",
@@ -109,7 +109,7 @@
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 103,
+            "line": 112,
             "description": "Gets the siblings nodes of the given node.",
             "itemtype": "method",
             "name": "getSiblings",
@@ -128,7 +128,7 @@
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 124,
+            "line": 133,
             "description": "Adds a new node as a child to the given node.\nThe new node will be the new rightmost child.\nIf you want to insert a node at a specific position, use the addSibling() method.",
             "itemtype": "method",
             "name": "addChild",
@@ -148,7 +148,7 @@
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 143,
+            "line": 152,
             "description": "Adds a new node as a sibling to the target node object.",
             "itemtype": "method",
             "name": "addSibling",
@@ -173,7 +173,7 @@
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 190,
+            "line": 199,
             "description": "Removes the given node and all its descendants.",
             "itemtype": "method",
             "name": "remove",
@@ -188,7 +188,7 @@
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 216,
+            "line": 225,
             "description": "Moves the given node and all its descendants to a new position relative to another node.",
             "itemtype": "method",
             "name": "move",
@@ -213,7 +213,7 @@
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 264,
+            "line": 273,
             "description": "Helper\nGets node by given node's id.",
             "params": [
                 {
@@ -229,7 +229,7 @@
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 274,
+            "line": 283,
             "description": "Helper\nGets firebase reference by given node's id.",
             "params": [
                 {
@@ -245,77 +245,83 @@
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 284,
+            "line": 293,
             "description": "Helper\nCalculates path by shifting given path with specific step.",
             "class": "GCCIModel"
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 292,
+            "line": 301,
             "description": "Helper\nCalculates path by appending a path to a given one.",
             "class": "GCCIModel"
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 300,
+            "line": 309,
             "description": "Helper\nGets depth of given path.",
             "class": "GCCIModel"
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 308,
+            "line": 317,
             "description": "Helper\nGets path at a depth.",
             "class": "GCCIModel"
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 316,
+            "line": 325,
             "description": "Helper\nUpdates the path of the given node and all of its descendants.",
             "class": "GCCIModel"
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 330,
+            "line": 339,
             "description": "Helper\nGets parent's path value of the given node.",
             "class": "GCCIModel"
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 338,
+            "line": 347,
             "description": "Helper\nGets index at given depth.\nIf no depth specified, gets rightmost index.",
             "class": "GCCIModel"
         },
         {
             "file": "src\\assets\\js\\model.js",
-            "line": 350,
+            "line": 359,
             "description": "Helper\nConverts index to path format.",
+            "class": "GCCIModel"
+        },
+        {
+            "file": "src\\assets\\js\\model.js",
+            "line": 367,
+            "description": "Helper\nDepth First Search",
             "class": "GCCIModel"
         }
     ],
     "warnings": [
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\assets\\js\\model.js:52"
+            "line": " src\\assets\\js\\model.js:61"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\assets\\js\\model.js:71"
+            "line": " src\\assets\\js\\model.js:80"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\assets\\js\\model.js:90"
+            "line": " src\\assets\\js\\model.js:99"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\assets\\js\\model.js:103"
+            "line": " src\\assets\\js\\model.js:112"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\assets\\js\\model.js:264"
+            "line": " src\\assets\\js\\model.js:273"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\assets\\js\\model.js:274"
+            "line": " src\\assets\\js\\model.js:283"
         },
         {
             "message": "Missing item type\n------------------------------------------\nName:    GCCI Model Script\nVersion: 1.0.0\nAuthor:  PZ\nDate:    2015-10-15\n------------------------------------------\n\nChange Log:\n\n1.0.0 (2015-10-15)\n- added basic model structure",
@@ -323,43 +329,47 @@
         },
         {
             "message": "Missing item type\nHelper\nGets node by given node's id.",
-            "line": " src\\assets\\js\\model.js:264"
+            "line": " src\\assets\\js\\model.js:273"
         },
         {
             "message": "Missing item type\nHelper\nGets firebase reference by given node's id.",
-            "line": " src\\assets\\js\\model.js:274"
+            "line": " src\\assets\\js\\model.js:283"
         },
         {
             "message": "Missing item type\nHelper\nCalculates path by shifting given path with specific step.",
-            "line": " src\\assets\\js\\model.js:284"
+            "line": " src\\assets\\js\\model.js:293"
         },
         {
             "message": "Missing item type\nHelper\nCalculates path by appending a path to a given one.",
-            "line": " src\\assets\\js\\model.js:292"
+            "line": " src\\assets\\js\\model.js:301"
         },
         {
             "message": "Missing item type\nHelper\nGets depth of given path.",
-            "line": " src\\assets\\js\\model.js:300"
+            "line": " src\\assets\\js\\model.js:309"
         },
         {
             "message": "Missing item type\nHelper\nGets path at a depth.",
-            "line": " src\\assets\\js\\model.js:308"
+            "line": " src\\assets\\js\\model.js:317"
         },
         {
             "message": "Missing item type\nHelper\nUpdates the path of the given node and all of its descendants.",
-            "line": " src\\assets\\js\\model.js:316"
+            "line": " src\\assets\\js\\model.js:325"
         },
         {
             "message": "Missing item type\nHelper\nGets parent's path value of the given node.",
-            "line": " src\\assets\\js\\model.js:330"
+            "line": " src\\assets\\js\\model.js:339"
         },
         {
             "message": "Missing item type\nHelper\nGets index at given depth.\nIf no depth specified, gets rightmost index.",
-            "line": " src\\assets\\js\\model.js:338"
+            "line": " src\\assets\\js\\model.js:347"
         },
         {
             "message": "Missing item type\nHelper\nConverts index to path format.",
-            "line": " src\\assets\\js\\model.js:350"
+            "line": " src\\assets\\js\\model.js:359"
+        },
+        {
+            "message": "Missing item type\nHelper\nDepth First Search",
+            "line": " src\\assets\\js\\model.js:367"
         }
     ]
 }
