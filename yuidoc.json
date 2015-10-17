@@ -1,0 +1,9 @@
+{
+  "name": "GCCI Model API",
+  "version": "1.0.0",
+  "logo": "../imgs/jsdoc_logo.jpg",
+  "options": {
+    "paths": ["./src/assets/js"],
+    "outdir": "./src/assets/jsdoc"
+  }
+}
