@@ -16,12 +16,15 @@ var jsSrc = function (isRelease) {
     var libs = gulp.src([
         assetPath + "/libs/jquery/jquery-2.1.4.min.js",
         assetPath + "/libs/bootstrap/js/bootstrap.min.js",
-        assetPath + "/libs/angular/angular.min.js",
-        assetPath + "/libs/firebase/firebase.js",
-        assetPath + "/libs/firebase/angularfire.min.js"
+        assetPath + "/libs/react/react.min.js",
+        assetPath + "/libs/react/react-dom.min.js",
+        assetPath + "/libs/firebase/firebase.js"
     ]);
 
-    var custom = browserify(assetPath + "/js/config.js")
+    var custom = browserify([
+        assetPath + "/js/model.js",
+        assetPath + "/js/main.js"
+    ])
         .transform(babelify)
         .bundle()
         .pipe(source("custom.js"))
@@ -50,8 +53,7 @@ gulp.task("js-release", function () {
  */
 gulp.task("css", function () {
     var libs = gulp.src([
-        assetPath + "/libs/bootstrap/css/bootstrap.min.css",
-        assetPath + "/libs/font-awesome/css/font-awesome.min.css"
+        assetPath + "/libs/bootstrap/css/bootstrap.min.css"
     ]);
     var custom = gulp.src([
         assetPath + "/less/main.less"
@@ -69,7 +71,7 @@ gulp.task("css", function () {
  * font tasks
  */
 gulp.task("fonts", function () {
-    return gulp.src([assetPath + "/libs/font-awesome/fonts/*"])
+    return gulp.src([assetPath + "/libs/bootstrap/fonts/*"])
         .pipe(gulp.dest(genPath + "/fonts/"));
 });
 
@@ -89,7 +91,7 @@ gulp.task("watch", ["compile"], function () {
     };
 
     plugins.livereload.listen();
-    gulp.watch(assetPath + "/css/**/*.css", ["css"]).on("change", reload);
+    gulp.watch(assetPath + "/less/**/*.less", ["css"]).on("change", reload);
     gulp.watch(assetPath + "/js/**/*.js", ["js-dev"]).on("change", reload);
     gulp.watch(["src/**/*.html"]).on("change", reload);
 });

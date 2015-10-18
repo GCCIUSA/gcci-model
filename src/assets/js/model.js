@@ -17,7 +17,7 @@
  *
  * @class GCCIModel
  */
-class GCCIModel {
+export class GCCIModel {
     constructor() {
         this.rootRef = new Firebase("https://gcci-model.firebaseio.com/");
         this.nodes = [];
@@ -32,7 +32,7 @@ class GCCIModel {
             if (nodeObjs !== null) {
                 for (let key of Object.keys(nodeObjs)) {
                     let data = nodeObjs[key];
-                    data[id] = key;
+                    data["id"] = key;
                     this.nodes.push(data);
                 }
             }
@@ -45,12 +45,12 @@ class GCCIModel {
      * @method getTree
      * @return {Array} an array of nodes
      */
-    static getTree() {
+    getTree() {
         let list = [];
 
         for (let n of this.nodes) {
-            if (getDepth(n.path) === 1) {
-                dfs(n, list);
+            if (GCCIModel.getDepth(n.path) === 1) {
+                this.dfs(n, list);
                 break;
             }
         }
@@ -65,11 +65,11 @@ class GCCIModel {
      * @param {Object} node given node
      * @returns {Array} children nodes
      */
-    static getChildren(node) {
+    getChildren(node) {
         let children = [];
 
         for (let n of this.nodes) {
-            if (getParentPath(n) === node.path) {
+            if (GCCIModel.getParentPath(n) === node.path) {
                 children.push(n);
             }
         }
@@ -84,11 +84,12 @@ class GCCIModel {
      * @param {Object} node given node
      * @returns {Array} descendants nodes
      */
-    static getDescendants(node) {
+    getDescendants(node) {
         let descendants = [];
 
         for (let n of this.nodes) {
-            if (getPathAtDepth(n.path, getDepth(node.path)) === node.path && getDepth(n.path) > getDepth(node.path)) {
+            if (GCCIModel.getPathAtDepth(n.path, GCCIModel.getDepth(node.path)) === node.path &&
+                GCCIModel.getDepth(n.path) > GCCIModel.getDepth(node.path)) {
                 descendants.push(n);
             }
         }
@@ -103,8 +104,8 @@ class GCCIModel {
      * @param {Object} node given node
      * @returns {Object} parent node
      */
-    static getParent(node) {
-        let parentPath = getParentPath(node);
+    getParent(node) {
+        let parentPath = GCCIModel.getParentPath(node);
 
         return this.nodes.find(x => x.path === parentPath);
     }
@@ -116,12 +117,12 @@ class GCCIModel {
      * @param {Object} node given node
      * @returns {Array} siblings nodes
      */
-    static getSiblings(node) {
+    getSiblings(node) {
         let siblings = [],
-            parentPath = getParentPath(node);
+            parentPath = GCCIModel.getParentPath(node);
 
         for (let n of this.nodes) {
-            if (parentPath === getParentPath(n)) {
+            if (parentPath === GCCIModel.getParentPath(n)) {
                 siblings.push(n);
             }
         }
@@ -139,8 +140,8 @@ class GCCIModel {
      * @param {Object} target target node
      * @param {Object} data new node's data
      */
-    static addChild(target, data) {
-        let childPath = calcPathAppend(target.path, indexToPath(getChildren(target).length + 1));
+    addChild(target, data) {
+        let childPath = GCCIModel.calcPathAppend(target.path, GCCIModel.indexToPath(this.getChildren(target).length + 1));
 
         this.rootRef.push().set({
             "title": data.title,
@@ -157,28 +158,28 @@ class GCCIModel {
      * @param {String} pos possible values are: first, last, left, right
      * @param {Object} data new node's data
      */
-    static addSibling(target, pos, data) {
+    addSibling(target, pos, data) {
         let [siblings, parentPath, newNodePath] = [
-            getSiblings(target),
-            getParentPath(target),
+            this.getSiblings(target),
+            GCCIModel.getParentPath(target),
             ""
         ];
 
         // shift target's siblings
         if (pos === "first") {
-            newNodePath = calcPathAppend(parentPath, indexToPath(1));
+            newNodePath = GCCIModel.calcPathAppend(parentPath, GCCIModel.indexToPath(1));
             for (let s of siblings) {
-                updatePath(s, calcPathShift(s.path, 1));
+                this.updatePath(s, GCCIModel.calcPathShift(s.path, 1));
             }
         }
         else if (pos === "last") {
-            newNodePath = calcPathAppend(parentPath + indexToPath(siblings.length + 1));
+            newNodePath = GCCIModel.calcPathAppend(parentPath + GCCIModel.indexToPath(siblings.length + 1));
         }
         else if (pos === "left" || pos === "right") {
-            newNodePath = pos === "left" ? target.path : calcPathShift(target.path, 1);
+            newNodePath = pos === "left" ? target.path : GCCIModel.calcPathShift(target.path, 1);
             for (let s of siblings) {
-                if (getPathIndex(s.path) >= getPathIndex(newNodePath)) {
-                    updatePath(s, calcPathShift(s.path, 1));
+                if (GCCIModel.getPathIndex(s.path) >= GCCIModel.getPathIndex(newNodePath)) {
+                    this.updatePath(s, GCCIModel.calcPathShift(s.path, 1));
                 }
             }
         }
@@ -202,22 +203,22 @@ class GCCIModel {
      * @method remove
      * @param {Object} node given node
      */
-    static remove(node) {
+    remove(node) {
         let [descendants, siblings, pathIndex] = [
-            getDescendants(node),
-            getSiblings(node),
-            getPathIndex(node.path)
+            this.getDescendants(node),
+            this.getSiblings(node),
+            GCCIModel.getPathIndex(node.path)
         ];
 
         for (let d of descendants) {
-            getRefById(d.id).remove();
+            this.getRefById(d.id).remove();
         }
-        getRefById(node.id).remove();
+        this.getRefById(node.id).remove();
 
         // update path of its right siblings
         for (let s of siblings) {
-            if (getPathIndex(s.path) > pathIndex) {
-                updatePath(s, calcPathShift(s.path, -1));
+            if (GCCIModel.getPathIndex(s.path) > pathIndex) {
+                this.updatePath(s, GCCIModel.calcPathShift(s.path, -1));
             }
         }
     }
@@ -230,14 +231,14 @@ class GCCIModel {
      * @param {Object} target target node
      * @param {String} pos possible values are: child, left, right
      */
-    static move(node, target, pos) {
+    move(node, target, pos) {
         let [oPath, oSiblings] = [
             node.path,
-            getSiblings(node)
+            this.getSiblings(node)
         ];
 
         // check if move to an invalid target
-        for (let d of getDescendants(node)) {
+        for (let d of this.getDescendants(node)) {
             if (d.id === target.id) {
                 throw "Cannot move node to one of its descendants."
             }
@@ -245,57 +246,80 @@ class GCCIModel {
 
         // insert node to new location
         if (pos === "child") {
-            let newPath = calcPathAppend(target.path, indexToPath(getChildren(target).length + 1));
-            updatePath(node, newPath);
+            let newPath = GCCIModel.calcPathAppend(target.path, GCCIModel.indexToPath(this.getChildren(target).length + 1));
+            this.updatePath(node, newPath);
         }
         else if (pos === "left" || pos === "right") {
-            let newPath = pos === "left" ? target.path : calcPathShift(target.path, 1);
-            updatePath(node, newPath);
+            let newPath = pos === "left" ? target.path : GCCIModel.calcPathShift(target.path, 1);
+            this.updatePath(node, newPath);
 
-            for (let s of getSiblings(target)) {
-                if (getPathIndex(s.path) >= getPathIndex(newNodePath)) {
-                    updatePath(s, calcPathShift(s.path, 1));
+            for (let s of this.getSiblings(target)) {
+                if (GCCIModel.getPathIndex(s.path) >= GCCIModel.getPathIndex(newNodePath)) {
+                    this.updatePath(s, GCCIModel.calcPathShift(s.path, 1));
                 }
             }
         }
 
         // shift node's original location's siblings
         for (let s of oSiblings) {
-            if (getPathIndex(s.path) > getPathIndex(oPath)) {
-                updatePath(s, calcPathShift(s.path, -1));
+            if (GCCIModel.getPathIndex(s.path) > GCCIModel.getPathIndex(oPath)) {
+                this.updatePath(s, GCCIModel.calcPathShift(s.path, -1));
             }
         }
     }
 
-
-
-
     /**
-     * Helper
      * Gets node by given node's id.
      * @param id - given node's id
      * @returns {Object} node if found, else undefined
      */
-    static getNodeById(id) {
+    getNodeById(id) {
         return this.nodes.find(x => x.id === id);
     }
 
     /**
-     * Helper
      * Gets firebase reference by given node's id.
      * @param id - given node's id
      * @returns {Object} firebase reference if found, else null
      */
-    static getRefById(id) {
+    getRefById(id) {
         return this.rootRef.orderByKey().equalTo(id).ref();
     }
+
+    /**
+     * Depth First Search
+     * This is not a public API, do not call this directly.
+     */
+    dfs(node, list) {
+        list.push(node);
+        for (let n of this.getChildren(node)) {
+            this.dfs(n, list);
+        }
+    }
+
+    /**
+     * Updates the path of the given node and all of its descendants.
+     * This is not a public API, do not call this directly.
+     */
+    updatePath(node, newPath) {
+        let descendants = getDescendants(node);
+
+        for (let d of descendants) {
+            let dNewPath = newPath + d.path.substr(node.path.length);
+            this.getRefById(d.id).update({ path: dNewPath});
+        }
+        this.getRefById(node.id).update({ path: newPath });
+    }
+
+
+
 
     /**
      * Helper
      * Calculates path by shifting given path with specific step.
      */
     static calcPathShift(path, shift) {
-        return path.substr(0, path.length - 4) + indexToPath((getPathIndex(path) + shift));
+        return path.substr(0, path.length - 4) + GCCIModel.indexToPath((GCCIModel.getPathIndex(path) + shift));
     }
 
     /**
@@ -324,20 +348,6 @@ class GCCIModel {
 
     /**
      * Helper
-     * Updates the path of the given node and all of its descendants.
-     */
-    static updatePath(node, newPath) {
-        let descendants = getDescendants(node);
-
-        for (let d of descendants) {
-            let dNewPath = newPath + d.path.substr(node.path.length);
-            getRefById(d.id).update({ path: dNewPath});
-        }
-        getRefById(node.id).update({ path: newPath });
-    }
-
-    /**
-     * Helper
      * Gets parent's path value of the given node.
      */
     static getParentPath(node) {
@@ -362,16 +372,5 @@ class GCCIModel {
      */
     static indexToPath(index) {
         return (10000 + index).toString().substr(1);
-    }
-
-    /**
-     * Helper
-     * Depth First Search
-     */
-    static dfs(node, list) {
-        list.push(node);
-        for (let n of getChildren(node)) {
-            dfs(n, list);
-        }
     }
 }
