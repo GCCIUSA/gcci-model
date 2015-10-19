@@ -19,9 +19,22 @@
  */
 export class GCCIModel {
     constructor() {
+        // defines errors
+        this.errors = {
+            "NOT_READY": new Error("GCCIModel is not ready. Listen for 'GCCIMODEL_READY' event on 'document' object."),
+            "INVALID_MOVE": new Error("Cannot move node to one of its descendants.")
+        };
+
+        // defines firebase root reference
         this.rootRef = new Firebase("https://gcci-model.firebaseio.com/");
+
+        // defines array to hold all nodes
         this.nodes = [];
 
+        // defines ready state
+        this.isReady = false;
+
+        // initializes object
         this.init();
     }
 
@@ -37,9 +50,39 @@ export class GCCIModel {
                 }
             }
 
-            // dispatch ready event
+            // set ready state and dispatch ready event
+            this.isReady = true;
             document.dispatchEvent(new CustomEvent("GCCIMODEL_READY"));
         });
+    }
+
+    /**
+     * Checks if state is ready, throws NOT_READY error if false.
+     */
+    checkReady() {
+        if (!this.isReady) {
+            throw this.errors.NOT_READY;
+        }
+    }
+
+    /**
+     * Gets node by given node's id.
+     * @param id - given node's id
+     * @returns {Object} node if found, else undefined
+     */
+    getNodeById(id) {
+        this.checkReady();
+
+        return this.nodes.find(x => x.id === id);
+    }
+
+    /**
+     * Gets firebase reference by given node's id.
+     * @param id - given node's id
+     * @returns {Object} firebase reference if found, else null
+     */
+    getRefById(id) {
+        return this.rootRef.orderByKey().equalTo(id).ref();
     }
 
     /**
@@ -49,6 +92,8 @@ export class GCCIModel {
      * @return {Array} an array of nodes
      */
     getTree() {
+        this.checkReady();
+
         let list = [];
 
         for (let n of this.nodes) {
@@ -243,7 +288,7 @@ export class GCCIModel {
         // check if move to an invalid target
         for (let d of this.getDescendants(node)) {
             if (d.id === target.id) {
-                throw "Cannot move node to one of its descendants."
+                throw this.errors.INVALID_MOVE;
             }
         }
 
@@ -269,24 +314,6 @@ export class GCCIModel {
                 this.updatePath(s, GCCIModel.calcPathShift(s.path, -1));
             }
         }
-    }
-
-    /**
-     * Gets node by given node's id.
-     * @param id - given node's id
-     * @returns {Object} node if found, else undefined
-     */
-    getNodeById(id) {
-        return this.nodes.find(x => x.id === id);
-    }
-
-    /**
-     * Gets firebase reference by given node's id.
-     * @param id - given node's id
-     * @returns {Object} firebase reference if found, else null
-     */
-    getRefById(id) {
-        return this.rootRef.orderByKey().equalTo(id).ref();
     }
 
     /**

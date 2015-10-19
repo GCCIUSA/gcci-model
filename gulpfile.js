@@ -22,7 +22,6 @@ var jsSrc = function (isRelease) {
     ]);
 
     var custom = browserify([
-        assetPath + "/js/model.js",
         assetPath + "/js/main.js"
     ])
         .transform(babelify)
