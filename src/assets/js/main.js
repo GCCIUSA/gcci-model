@@ -1,28 +1,31 @@
 import { GCCIModel } from './model';
 
-var Para = React.createClass({
-    render: function () {
-        var node = this.props.data.map(function (para) {
+var Tree = React.createClass({
+    addChild: function (node) {
+        console.log(node);
+    },
+
+    render: function() {
+        let node = this.props.data.map((n) => {
             return (
-                <div>
-                    {para.title}<hr/>
+                <div onClick={this.addChild(n)}>
+                    {n.title}<hr/>
                 </div>
             );
         });
 
         return (
-            <div className="Para">{node}</div>
+            <div className="Tree">{node}</div>
         )
     }
 });
 
 let model = new GCCIModel();
 
-setTimeout(() => {
+document.addEventListener("GCCIMODEL_READY", function () {
     let data = model.getTree();
     React.render(
-        <Para data={data}/>,
+        <Tree data={data}/>,
         document.getElementById("mainContainer")
     );
-}, 2000);
-
+});

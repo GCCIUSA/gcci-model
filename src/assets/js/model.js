@@ -36,6 +36,9 @@ export class GCCIModel {
                     this.nodes.push(data);
                 }
             }
+
+            // dispatch ready event
+            document.dispatchEvent(new CustomEvent("GCCIMODEL_READY"));
         });
     }
 
