@@ -42,6 +42,8 @@ export class GCCIModel {
         this.rootRef.on("value", (snapshot) => {
             let nodeObjs = snapshot.val();
 
+            // reset nodes array
+            this.nodes = [];
             if (nodeObjs !== null) {
                 for (let key of Object.keys(nodeObjs)) {
                     let data = nodeObjs[key];
