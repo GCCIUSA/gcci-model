@@ -1,31 +1,43 @@
 import { GCCIModel } from './model';
 
-var Tree = React.createClass({
-    addChild: function (node) {
-        console.log(node);
-    },
+let model = new GCCIModel();
 
-    render: function() {
-        let node = this.props.data.map((n) => {
+class Tree extends React.Component {
+    addChild(target) {
+        console.log(target);
+    }
+
+    addSibling(target, pos) {
+        console.log(target);
+    }
+
+    NodeRowStyle(node) {
+        return {
+            marginLeft: (GCCIModel.getDepth(node.path) - 1) * 30
+        };
+    }
+
+    render() {
+        let nodeRow = this.props.data.map((node) => {
             return (
-                <div onClick={this.addChild(n)}>
-                    {n.title}<hr/>
+                <div  onClick={this.addChild.bind(this, node)} style={this.NodeRowStyle(node)} className="node-row">
+                    <i className="glyphicon glyphicon-option-vertical"></i>
+                    <span className="node-title">{node.title}</span>
                 </div>
             );
         });
 
         return (
-            <div className="Tree">{node}</div>
-        )
+            <div className="model-tree">{nodeRow}</div>
+        );
     }
-});
+}
 
-let model = new GCCIModel();
 
-document.addEventListener("GCCIMODEL_READY", function () {
-    let data = model.getTree();
+
+document.addEventListener("GCCIMODEL_READY", () => {
     React.render(
-        <Tree data={data}/>,
+        <Tree data={model.getTree()}/>,
         document.getElementById("mainContainer")
     );
 });
