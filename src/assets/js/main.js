@@ -3,12 +3,26 @@ import { GCCIModel } from './model';
 let model = new GCCIModel();
 
 class Tree extends React.Component {
-    addChild(target) {
-        console.log(target);
+    constructor(props) {
+        super(props);
+
+        this.moveNode = null;
     }
 
-    addSibling(target, pos) {
-        console.log(target);
+    addChild(target) {
+        console.log("add child");
+    }
+
+    addSibling(target, position) {
+        console.log("add sibling " + position);
+    }
+
+    move(node) {
+        console.log("move");
+    }
+
+    moveTo(target, position) {
+
     }
 
     NodeRowStyle(node) {
@@ -20,8 +34,35 @@ class Tree extends React.Component {
     render() {
         let nodeRow = this.props.data.map((node) => {
             return (
-                <div  onClick={this.addChild.bind(this, node)} style={this.NodeRowStyle(node)} className="node-row">
-                    <i className="glyphicon glyphicon-option-vertical"></i>
+                <div style={this.NodeRowStyle(node)} className="node-row">
+                    <div className="dropdown pull-left">
+                        <a className="dropdown-toggle menu-action-icon action-handle" data-toggle="dropdown">
+                            <i className="glyphicon glyphicon-option-vertical"></i>
+                        </a>
+                        <ul className="dropdown-menu">
+                            <li>
+                                <a onClick={this.addSibling.bind(this, node, "left")}>
+                                    <i className="glyphicon glyphicon-menu-up"></i> &nbsp; add sibling above
+                                </a>
+                            </li>
+                            <li>
+                                <a onClick={this.addSibling.bind(this, node, "right")}>
+                                    <i className="glyphicon glyphicon-menu-down"></i> &nbsp; add sibling below
+                                </a>
+                            </li>
+                            <li>
+                                <a onClick={this.addChild.bind(this, node)}>
+                                    <i className="glyphicon glyphicon-arrow-right rotate45"></i> &nbsp; add child
+                                </a>
+                            </li>
+                            <li>
+                                <a onClick={this.move.bind(this.node)}>
+                                    <i class="glyphicon glyphicon-move"></i> &nbsp; move
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
                     <span className="node-title">{node.title}</span>
                 </div>
             );

@@ -4,12 +4,29 @@ body {
   }
 }
 
+/* set cursor to be pointer */
+.ptr {
+  cursor: pointer;
+}
+
+/* rotate element 45 degree clockwise */
+.rotate45 {
+  transform: rotate(45deg);
+}
+
+/* tree structure */
 .model-tree {
+  a {
+    .ptr;
+  }
   > .node-row {
     padding: 5px;
     .node-title {
       margin-left: 2px;
       padding-left: 3px;
+    }
+    .action-handle {
+      color: #bbb;
     }
   }
 }
