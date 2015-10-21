@@ -1,5 +1,4 @@
 import { GCCIModel } from './model';
-import { NodeEditor } from './node-editor';
 import { Tree } from './tree';
 
 

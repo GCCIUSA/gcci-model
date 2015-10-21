@@ -1,4 +1,5 @@
 import { GCCIModel } from './model';
+import { NodeEditor } from './node-editor';
 
 
 export class Tree extends React.Component {
@@ -9,7 +10,7 @@ export class Tree extends React.Component {
     }
 
     addChild(target) {
-        console.log("add child");
+        $(this.refs.payload.getDOMNode()).modal();
     }
 
     addSibling(target, position) {
@@ -68,7 +69,10 @@ export class Tree extends React.Component {
         });
 
         return (
-            <div className="model-tree">{nodeRow}</div>
+            <div>
+                <div className="model-tree">{nodeRow}</div>
+                <NodeEditor header="My Modal New Header"/>
+            </div>
         );
     }
 }
