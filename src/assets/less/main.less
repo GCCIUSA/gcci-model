@@ -1,7 +1,8 @@
+@btn-icon-padding: 3px;
+@page-top-padding: 60px;
+
 body {
-  > .container {
-    margin-top: 60px;
-  }
+
 }
 
 /* set cursor to be pointer */
@@ -12,6 +13,36 @@ body {
 /* rotate element 45 degree clockwise */
 .rotate45 {
   transform: rotate(45deg);
+}
+
+/* icon in button */
+.btn-icon {
+  &.btn-icon-left {
+    padding-right: @btn-icon-padding;
+  }
+  &.btn-icon-right {
+    padding-left: @btn-icon-padding;
+  }
+}
+
+md-icon.fa {
+  padding-top: 5px;
+}
+
+/* Toast */
+@media (min-width: 600px) {
+  md-toast.md-top {
+    position: fixed;
+    top: @page-top-padding + 8px;
+  }
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
 }
 
 /* tree structure */

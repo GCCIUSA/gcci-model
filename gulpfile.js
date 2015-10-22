@@ -15,14 +15,15 @@ var genPath = "./src/assets/gen";
 var jsSrc = function (isRelease) {
     var libs = gulp.src([
         assetPath + "/libs/jquery/jquery-2.1.4.min.js",
-        assetPath + "/libs/bootstrap/js/bootstrap.min.js",
-        assetPath + "/libs/react/react.min.js",
-        assetPath + "/libs/react/react-dom.min.js",
-        assetPath + "/libs/firebase/firebase.js"
+        assetPath + "/libs/firebase/firebase.js",
+        assetPath + "/libs/angular/angular.min.js",
+        assetPath + "/libs/angular/angular-aria.min.js",
+        assetPath + "/libs/angular/angular-animate.min.js",
+        assetPath + "/libs/angular-material/angular-material.min.js"
     ]);
 
     var custom = browserify([
-        assetPath + "/js/main.js"
+        assetPath + "/js/config.js"
     ])
         .transform(babelify)
         .bundle()
@@ -52,7 +53,8 @@ gulp.task("js-release", function () {
  */
 gulp.task("css", function () {
     var libs = gulp.src([
-        assetPath + "/libs/bootstrap/css/bootstrap.min.css"
+        assetPath + "/libs/font-awesome/css/font-awesome.min.css",
+        assetPath + "/libs/angular-material/angular-material.min.css"
     ]);
     var custom = gulp.src([
         assetPath + "/less/main.less"
@@ -70,7 +72,7 @@ gulp.task("css", function () {
  * font tasks
  */
 gulp.task("fonts", function () {
-    return gulp.src([assetPath + "/libs/bootstrap/fonts/*"])
+    return gulp.src([assetPath + "/libs/font-awesome/fonts/*"])
         .pipe(gulp.dest(genPath + "/fonts/"));
 });
 

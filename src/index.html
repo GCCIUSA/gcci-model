@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="app">
 <head>
     <meta charset="UTF-8">
     <title>GCCI Model</title>
 
     <link rel="stylesheet" type="text/css" href="assets/gen/css/app.min.css"/>
 </head>
-<body>
+<body ng-controller="MainCtrl as main" ng-cloak>
 
 <!-- Fixed navbar -->
-<nav class="navbar navbar-default navbar-fixed-top">
+<!-- <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -28,13 +28,39 @@
                     </a>
                 </li>
             </ul>
-        </div><!--/.nav-collapse -->
+        </div>
     </div>
-</nav>
+</nav> -->
+<md-toolbar class="navbar" layout layout-align="space-around center">
+    <div>
+        <div class="md-toolbar-tools">
+            <h2>GCCI Management System</h2>
+        </div>
+    </div>
+    <div>
+        <md-menu>
+            <md-button class="md-mini" ng-click="main.openMenu($mdOpenMenu, $event)">
+                Test User <i class="fa fa-caret-down btn-icon btn-icon-right"></i>
+            </md-button>
+            <md-menu-content width="3">
+                <md-menu-item>
+                    <md-button>
+                        <md-icon md-font-icon="fa-comment" class="fa" md-menu-align-target></md-icon>
+                        Feedback
+                    </md-button>
+                </md-menu-item>
+                <md-menu-divider></md-menu-divider>
+                <md-menu-item>
+                    <md-button>
+                        <md-icon md-font-icon="fa-sign-out" class="fa" md-menu-align-target></md-icon>
+                        Log Out
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+    </div>
+</md-toolbar>
 
-<div class="container" id="mainContainer">
-
-</div>
 
 <script src="assets/gen/js/app.js"></script>
 </body>
