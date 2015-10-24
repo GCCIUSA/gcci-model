@@ -27,67 +27,47 @@ export class GCCIModel {
 
         // defines firebase root reference
         this.rootRef = new Firebase("https://gcci-model.firebaseio.com/");
-
-        // defines array to hold all nodes
-        this.nodes = [];
-
-        // defines ready state
-        this.isReady = false;
-
-        // initializes object
-        this.init();
     }
 
-    init() {
-        this.rootRef.on("value", (snapshot) => {
-            let nodeObjs = snapshot.val();
+    static parse(snapshotVal) {
+        let parsed = [];
 
-            // reset nodes array
-            this.nodes = [];
-            if (nodeObjs !== null) {
-                for (let key of Object.keys(nodeObjs)) {
-                    let data = nodeObjs[key];
-                    data["id"] = key;
-                    this.nodes.push(data);
-                }
-            }
-
-            // set ready state and dispatch ready event
-            this.isReady = true;
-            document.dispatchEvent(new CustomEvent("GCCIMODEL_READY"));
-        });
-    }
-
-    /**
-     * Checks if state is ready, throws NOT_READY error if false.
-     */
-    checkReady() {
-        if (!this.isReady) {
-            throw this.errors.NOT_READY;
+        for (let key of Object.keys(snapshotVal)) {
+            let obj = snapshotVal[key];
+            obj["id"] = key;
+            parsed.push(obj);
         }
+
+        return parsed;
     }
 
     /**
      * Gets node by given node's id.
+     *
      * @param id - given node's id
-     * @returns {Object} node if found, else undefined
+     * @returns {Promise} node if found, else null
      */
     getNodeById(id) {
-        this.checkReady();
+        let deferred = $.Deferred();
 
-        return this.nodes.find(x => x.id === id);
+        this.rootRef.orderByKey().equalTo(id).once("child_added", (snapshot) => {
+            deferred.resolve(snapshot.val());
+        });
+
+        return deferred.promise();
     }
 
     /**
      * Gets firebase reference by given node's id.
+     *
      * @param id - given node's id
-     * @returns {Object} firebase reference if found, else null
+     * @returns {Promise} firebase reference if found, else null
      */
     getRefById(id) {
         let deferred = $.Deferred();
 
         this.rootRef.orderByKey().equalTo(id).once("child_added", (snapshot) => {
-            deferred.resolve(snapshot.val());
+            deferred.resolve(snapshot.ref());
         });
 
         return deferred.promise();
@@ -100,18 +80,13 @@ export class GCCIModel {
      * @return {Array} an array of nodes
      */
     getTree() {
-        this.checkReady();
+        let deferred = $.Deferred();
 
-        let list = [];
+        this.rootRef.once("value", (snapshot) => {
+            deferred.resolve(GCCIModel.dfs(GCCIModel.parse(snapshot.val())));
+        });
 
-        for (let n of this.nodes) {
-            if (GCCIModel.getDepth(n.path) === 1) {
-                this.dfs(n, list);
-                break;
-            }
-        }
-
-        return list;
+        return deferred.promise();
     }
 
     /**
@@ -122,15 +97,20 @@ export class GCCIModel {
      * @returns {Array} children nodes
      */
     getChildren(node) {
-        let children = [];
+        let deferred = $.Deferred();
 
-        for (let n of this.nodes) {
-            if (GCCIModel.getParentPath(n) === node.path) {
-                children.push(n);
+        this.rootRef.orderByChild("path").startAt(node.path).once("value", (snapshot) => {
+            let children = [];
+            for (let n of GCCIModel.parse(snapshot.val())) {
+                if (n.depth === node.depth + 1) {
+                    children.push(n);
+                }
             }
-        }
+            children.sort((a, b) => a.path.localeCompare(b.path));
+            deferred.resolve(children);
+        });
 
-        return children;
+        return deferred.promise();
     }
 
     /**
@@ -197,14 +177,25 @@ export class GCCIModel {
      * @param {Object} data new node's data
      */
     addChild(target, data) {
-        let childPath = GCCIModel.calcPathAppend(target.path, GCCIModel.indexToPath(this.getChildren(target).length + 1));
+        let deferred = $.Deferred();
 
+        let childPath = GCCIModel.calcPathAppend(target.path, GCCIModel.indexToPath(target.numChild + 1));
         this.rootRef.push({
             "title": data.title,
             "uid": data.uid,
             "path": childPath,
-            "depth": GCCIModel.getDepth(childPath)
+            "depth": GCCIModel.getDepth(childPath),
+            "numChild": 0
+        }, (error) => {
+            if (error) {
+                deferred.reject(error);
+            }
+            else {
+                deferred.resolve();
+            }
         });
+
+        return deferred.promise();
     }
 
     /**
@@ -330,11 +321,26 @@ export class GCCIModel {
      * Depth First Search
      * This is not a public API, do not call this directly.
      */
-    dfs(node, list) {
-        list.push(node);
-        for (let n of this.getChildren(node)) {
-            this.dfs(n, list);
+    static dfs(nodes, node, list = []) {
+        if (!node) {
+            node = nodes[0];
         }
+
+        list.push(node);
+
+        let children = [];
+        for (let n of nodes) {
+            if (n.depth === node.depth + 1 && GCCIModel.getParentPath(n) === node.path) {
+                children.push(n);
+            }
+        }
+        children.sort((a, b) => a.path.localeCompare(b.path));
+
+        for (let n of children) {
+            GCCIModel.dfs(nodes, n, list);
+        }
+
+        return list;
     }
 
     /**

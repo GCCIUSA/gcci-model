@@ -1,0 +1,36 @@
+<md-dialog aria-label="Node Editor" ng-cloak>
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Add Node</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()" aria-label="Cancel">
+                    <md-icon md-font-icon="fa-times" class="fa"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content style="min-width: 400px;">
+            <div class="md-dialog-content">
+                <md-input-container>
+                    <label>Title</label>
+                    <input type="text" ng-model="title" md-autofocus/>
+                </md-input-container>
+                <md-input-container>
+                    <label>User's E-mail</label>
+                    <input type="text" ng-model="email"/>
+                </md-input-container>
+            </div>
+        </md-dialog-content>
+
+        <div class="md-actions" layout="row">
+            <span flex></span>
+            <md-button ng-click="cancel()">
+                Cancel
+            </md-button>
+            <md-button class="md-primary" ng-click="save()">
+                Save
+            </md-button>
+        </div>
+    </form>
+</md-dialog>

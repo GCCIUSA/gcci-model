@@ -2,7 +2,7 @@
 @page-top-padding: 60px;
 
 body {
-
+  padding-top: @page-top-padding + 10px;
 }
 
 /* set cursor to be pointer */
@@ -29,6 +29,10 @@ md-icon.fa {
   padding-top: 5px;
 }
 
+.md-fab .fa {
+  padding-top: 7px;
+}
+
 /* Toast */
 @media (min-width: 600px) {
   md-toast.md-top {
@@ -47,17 +51,5 @@ md-icon.fa {
 
 /* tree structure */
 .model-tree {
-  a {
-    .ptr;
-  }
-  > .node-row {
-    padding: 5px;
-    .node-title {
-      margin-left: 2px;
-      padding-left: 3px;
-    }
-    .action-handle {
-      color: #bbb;
-    }
-  }
+
 }

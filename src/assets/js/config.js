@@ -1,4 +1,4 @@
-import { GCCIModel } from "./model";
+import { GCCIModel } from "./model-deferred";
 import { UtilService } from "./service";
 import { MainCtrl } from "./controller";
 

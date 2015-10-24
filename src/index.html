@@ -61,6 +61,51 @@
     </div>
 </md-toolbar>
 
+<div layout layout-align="space-around start">
+    <div layout="column" layout-align="start start" class="model-tree">
+        <div ng-repeat="node in main.tree" style="margin-left: {{main.calcIndentation(node.depth)}}px;" ng-if="node.depth > 1">
+            <md-menu>
+                <md-button class="md-icon-button" ng-click="main.openMenu($mdOpenMenu, $event)" aria-label="Menu">
+                    <md-icon md-font-icon="fa-ellipsis-v" class="fa"></md-icon>
+                </md-button>
+                <md-menu-content width="4">
+                    <md-menu-item>
+                        <md-button>
+                            <md-icon md-font-icon="fa-angle-up" class="fa" md-menu-align-target></md-icon>
+                            add sibling above
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-item>
+                        <md-button>
+                            <md-icon md-font-icon="fa-angle-down" class="fa" md-menu-align-target></md-icon>
+                            add sibling below
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-item>
+                        <md-button ng-click="main.addChild(node, $event)" aria-label="add child">
+                            <md-icon md-font-icon="fa-long-arrow-right rotate45" class="fa" md-menu-align-target></md-icon>
+                            add child
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-divider></md-menu-divider>
+                    <md-menu-item>
+                        <md-button ng-click="main.remove(node, $event)" aria-label="remove node">
+                            <md-icon md-font-icon="fa-trash-o" class="fa" md-menu-align-target></md-icon>
+                            remove
+                        </md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
+            <span>{{node.title}}</span>
+        </div>
+    </div>
+    <div>
+        <md-button class="md-fab" aria-label="Add" ng-click="main.addTemp()">
+            <md-icon md-font-icon="fa-plus" class="fa"></md-icon>
+        </md-button>
+    </div>
+</div>
+
 
 <script src="assets/gen/js/app.js"></script>
 </body>
