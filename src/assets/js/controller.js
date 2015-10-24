@@ -50,10 +50,8 @@ export class MainCtrl {
             parent: angular.element(document.body),
             targetEvent: evt
         }).then((data) => {
-            this.$rootScope.model.getNodeById(target.id).then((targetNode) => {
-                this.$rootScope.model.addChild(targetNode, { "title": data.title, "uid": data.email }).then(() => {
-                    this.loadTree();
-                });
+            this.$rootScope.model.addChild(target, { "title": data.title, "uid": data.email }).then(() => {
+                this.loadTree();
             });
         });
     }
@@ -71,7 +69,6 @@ export class MainCtrl {
                 .ok("Confirm")
                 .cancel("Cancel")
         ).then(() => {
-            node = this.$rootScope.model.getNodeById(node.id);
             this.$rootScope.model.remove(node);
         });
     }

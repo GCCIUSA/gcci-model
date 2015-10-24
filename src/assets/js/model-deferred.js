@@ -82,8 +82,10 @@ export class GCCIModel {
     getTree() {
         let deferred = $.Deferred();
 
-        this.rootRef.once("value", (snapshot) => {
-            deferred.resolve(GCCIModel.dfs(GCCIModel.parse(snapshot.val())));
+        this.rootRef.orderByChild("path").once("value", (snapshot) => {
+            let parsed = GCCIModel.parse(snapshot.val());
+            GCCIModel.sortNodesByPath(parsed);
+            deferred.resolve(parsed);
         });
 
         return deferred.promise();
@@ -121,16 +123,20 @@ export class GCCIModel {
      * @returns {Array} descendants nodes
      */
     getDescendants(node) {
-        let descendants = [];
+        let deferred = $.Deferred();
 
-        for (let n of this.nodes) {
-            if (GCCIModel.getPathAtDepth(n.path, GCCIModel.getDepth(node.path)) === node.path &&
-                GCCIModel.getDepth(n.path) > GCCIModel.getDepth(node.path)) {
-                descendants.push(n);
+        this.rootRef.orderByChild("path").startAt(node.path).once("value", (snapshot) => {
+            let descendants = [];
+            for (let n of GCCIModel.parse(snapshot.val())) {
+                if (GCCIModel.isDescendantOf(n, node)) {
+                    descendants.push(n);
+                }
             }
-        }
+            GCCIModel.sortNodesByPath(descendants);
+            deferred.resolve(descendants);
+        });
 
-        return descendants;
+        return deferred.promise();
     }
 
     /**
@@ -154,17 +160,20 @@ export class GCCIModel {
      * @returns {Array} siblings nodes
      */
     getSiblings(node) {
-        let siblings = [],
-            parentPath = GCCIModel.getParentPath(node);
+        let deferred = $.Deferred();
 
-        for (let n of this.nodes) {
-            if (parentPath === GCCIModel.getParentPath(n) && n.id !== node.id) {
-                siblings.push(n);
+        this.rootRef.orderByChild("path").startAt(GCCIModel.getParentPath(node)).once("value", (snapshot) => {
+            let siblings = [];
+            for (let n of GCCIModel.parse(snapshot.val())) {
+                if (GCCIModel.getParentPath(n) === GCCIModel.getParentPath(node)) {
+                    siblings.push(n);
+                }
             }
-        }
-        siblings.sort((a, b) => a.path.localeCompare(b.path));
+            GCCIModel.sortNodesByPath(siblings);
+            deferred.resolve(siblings);
+        });
 
-        return siblings;
+        return deferred.promise();
     }
 
     /**
@@ -191,7 +200,16 @@ export class GCCIModel {
                 deferred.reject(error);
             }
             else {
-                deferred.resolve();
+                this.rootRef.orderByKey().equalTo(target.id).once("child_added", (snapshot) => {
+                    snapshot.ref().update({ "numChild": target.numChild + 1 }, (error) => {
+                        if (error) {
+                            deferred.reject(error);
+                        }
+                        else {
+                            deferred.resolve();
+                        }
+                    });
+                });
             }
         });
 
@@ -253,23 +271,29 @@ export class GCCIModel {
      * @param {Object} node given node
      */
     remove(node) {
-        let [descendants, siblings, pathIndex] = [
-            this.getDescendants(node),
-            this.getSiblings(node),
-            GCCIModel.getPathIndex(node.path)
-        ];
+        let pathIndex = GCCIModel.getPathIndex(node.path),
+            parentPath = GCCIModel.getParentPath(node);
 
-        for (let d of descendants) {
-            this.getRefById(d.id).remove();
-        }
-        this.getRefById(node.id).remove();
+        // remove node and its descendants
+        this.rootRef.orderByChild("path").startAt(node.path).on("child_added", (snapshot) => {
+            if (GCCIModel.isDescendantOf(snapshot.val(), node) || snapshot.val().path === node.path) {
+                snapshot.ref().remove();
+            }
+        });
 
         // update path of its right siblings
-        for (let s of siblings) {
-            if (GCCIModel.getPathIndex(s.path) > pathIndex) {
-                this.updatePath(s, GCCIModel.calcPathShift(s.path, -1));
+        this.getSiblings(node).then((siblings) => {
+            for (let s of siblings) {
+                if (GCCIModel.getPathIndex(s.path) > pathIndex) {
+                    this.updatePath(s, GCCIModel.calcPathShift(s.path, -1));
+                }
             }
-        }
+        });
+
+        // reduce numChild of parent by 1
+        this.rootRef.orderByChild("path").equalTo(parentPath).once("child_added", (snapshot) => {
+            snapshot.ref().update({ "numChild": snapshot.val().numChild - 1 });
+        });
     }
 
     /**
@@ -318,10 +342,28 @@ export class GCCIModel {
     }
 
     /**
+     * Updates the path of the given node and all of its descendants.
+     * This is not a public API, do not call this directly.
+     */
+    updatePath(node, newPath) {
+        this.rootRef.orderByChild("path").startAt(node.path).on("child_added", (snapshot) => {
+            let val = snapshot.val();
+            if (GCCIModel.isDescendantOf(val, node) || val.path === node.path) {
+                let path = GCCIModel.calcPathAppend(newPath, val.path.substr(node.path.length));
+                snapshot.ref().update({
+                    "path": path,
+                    "depth": GCCIModel.getDepth(path)
+                })
+            }
+        });
+    }
+
+
+    /**
      * Depth First Search
      * This is not a public API, do not call this directly.
      */
-    static dfs(nodes, node, list = []) {
+    /* static dfs(nodes, node, list = []) {
         if (!node) {
             node = nodes[0];
         }
@@ -341,24 +383,26 @@ export class GCCIModel {
         }
 
         return list;
-    }
+    } */
 
     /**
-     * Updates the path of the given node and all of its descendants.
-     * This is not a public API, do not call this directly.
+     * Helper
+     * Sorts nodes by path
      */
-    updatePath(node, newPath) {
-        let descendants = getDescendants(node);
-
-        for (let d of descendants) {
-            let dNewPath = newPath + d.path.substr(node.path.length);
-            this.getRefById(d.id).update({ path: dNewPath});
-        }
-        this.getRefById(node.id).update({ path: newPath });
+    static sortNodesByPath(nodes) {
+        nodes.sort((a, b) => {
+            return a.path.localeCompare(b.path);
+        });
     }
 
 
-
+    /**
+     * Helper
+     * Checks if 'descendant' node is a descendant of 'of' node.
+     */
+    static isDescendantOf(descendant, of) {
+        return descendant.path !== of.path &&  descendant.path.substr(0, of.path.length) === of.path;
+    }
 
     /**
      * Helper
