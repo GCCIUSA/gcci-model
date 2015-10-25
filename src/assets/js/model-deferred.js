@@ -29,18 +29,6 @@ export class GCCIModel {
         this.rootRef = new Firebase("https://gcci-model.firebaseio.com/");
     }
 
-    static parse(snapshotVal) {
-        let parsed = [];
-
-        for (let key of Object.keys(snapshotVal)) {
-            let obj = snapshotVal[key];
-            obj["id"] = key;
-            parsed.push(obj);
-        }
-
-        return parsed;
-    }
-
     /**
      * Gets node by given node's id.
      *
@@ -77,7 +65,7 @@ export class GCCIModel {
      * Gets tree data structure with DFS.
      *
      * @method getTree
-     * @return {Array} an array of nodes
+     * @return {Promise} an array of nodes
      */
     getTree() {
         let deferred = $.Deferred();
@@ -96,7 +84,7 @@ export class GCCIModel {
      *
      * @method getChildren
      * @param {Object} node given node
-     * @returns {Array} children nodes
+     * @returns {Promise} array of children nodes
      */
     getChildren(node) {
         let deferred = $.Deferred();
@@ -120,7 +108,7 @@ export class GCCIModel {
      *
      * @method getDescendants
      * @param {Object} node given node
-     * @returns {Array} descendants nodes
+     * @returns {Promise} array of descendants nodes
      */
     getDescendants(node) {
         let deferred = $.Deferred();
@@ -144,12 +132,16 @@ export class GCCIModel {
      *
      * @method getParent
      * @param {Object} node given node
-     * @returns {Object} parent node
+     * @returns {Promise} parent node
      */
     getParent(node) {
-        let parentPath = GCCIModel.getParentPath(node);
+        let deferred = $.Deferred();
 
-        return this.nodes.find(x => x.path === parentPath);
+        this.rootRef.orderByChild("path").equalTo(GCCIModel.getParentPath(node)).once("child_added", (snapshot) => {
+            deferred.resolve(snapshot.val());
+        });
+
+        return deferred.promise();
     }
 
     /**
@@ -157,7 +149,7 @@ export class GCCIModel {
      *
      * @method getSiblings
      * @param {Object} node given node
-     * @returns {Array} siblings nodes
+     * @returns {Promise} array of siblings nodes
      */
     getSiblings(node) {
         let deferred = $.Deferred();
@@ -184,6 +176,7 @@ export class GCCIModel {
      * @method addChild
      * @param {Object} target target node
      * @param {Object} data new node's data
+     * @return {Promise}
      */
     addChild(target, data) {
         let deferred = $.Deferred();
@@ -221,46 +214,46 @@ export class GCCIModel {
      *
      * @method addSibling
      * @param {Object} target target node
-     * @param {String} pos possible values are: first, last, left, right
+     * @param {String} pos possible values are: left, right
      * @param {Object} data new node's data
      */
     addSibling(target, pos, data) {
-        let [siblings, parentPath, newNodePath] = [
-            this.getSiblings(target),
-            GCCIModel.getParentPath(target),
-            ""
-        ];
-
         // shift target's siblings
-        if (pos === "first") {
-            newNodePath = GCCIModel.calcPathAppend(parentPath, GCCIModel.indexToPath(1));
-            for (let s of siblings) {
-                this.updatePath(s, GCCIModel.calcPathShift(s.path, 1));
-            }
-        }
-        else if (pos === "last") {
-            newNodePath = GCCIModel.calcPathAppend(parentPath + GCCIModel.indexToPath(siblings.length + 1));
-        }
-        else if (pos === "left" || pos === "right") {
-            newNodePath = pos === "left" ? target.path : GCCIModel.calcPathShift(target.path, 1);
-            for (let s of siblings) {
-                if (GCCIModel.getPathIndex(s.path) >= GCCIModel.getPathIndex(newNodePath)) {
-                    this.updatePath(s, GCCIModel.calcPathShift(s.path, 1));
-                }
-            }
-        }
+        if (pos === "left" || pos === "right") {
+            let newNodePath = pos === "left" ? target.path : GCCIModel.calcPathShift(target.path, 1);
+            console.log(newNodePath);
 
-        // insert new node
-        if (newNodePath !== "") {
-            this.rootRef.push({
+            /*
+
+            // increase target's parent numChild by 1
+            this.rootRef.orderByChild("path").equalTo(GCCIModel.getParentPath(target)).once("child_added", (snapshot) => {
+                snapshot.ref().update({
+                    "numChild": snapshot.val().numChild + 1
+                });
+            }); */
+
+            // update path of target siblings
+            this.getSiblings(target).then((siblings) => {
+                for (let s of siblings) {
+                    if (GCCIModel.getPathIndex(s.path) >= GCCIModel.getPathIndex(newNodePath)) {
+                        //this.updatePath(s, GCCIModel.calcPathShift(s.path, 1));
+                        console.log(s);
+                    }
+                }
+            });
+
+            // insert new node
+            /* this.rootRef.push({
                 "title": data.title,
                 "uid": data.uid,
                 "path": newNodePath,
-                "depth": GCCIModel.getDepth(newNodePath)
+                "depth": GCCIModel.getDepth(newNodePath),
+                "numChild": 0
             });
+            */
         }
         else {
-            throw "Invalid path";
+            throw new Error("Invalid sibling position to add.");
         }
     }
 
@@ -387,14 +380,29 @@ export class GCCIModel {
 
     /**
      * Helper
-     * Sorts nodes by path
+     * Parses firebase snapshot.val() into an array of node objects.
+     */
+    static parse(snapshotVal) {
+        let parsed = [];
+
+        for (let key of Object.keys(snapshotVal)) {
+            let obj = snapshotVal[key];
+            obj["id"] = key;
+            parsed.push(obj);
+        }
+
+        return parsed;
+    }
+
+    /**
+     * Helper
+     * Sorts nodes by path.
      */
     static sortNodesByPath(nodes) {
         nodes.sort((a, b) => {
             return a.path.localeCompare(b.path);
         });
     }
-
 
     /**
      * Helper

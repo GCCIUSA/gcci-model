@@ -5,8 +5,8 @@
         "logo": "../imgs/jsdoc_logo.jpg"
     },
     "files": {
-        "src\\assets\\js\\model.js": {
-            "name": "src\\assets\\js\\model.js",
+        "src/assets/js/model-deferred.js": {
+            "name": "src/assets/js/model-deferred.js",
             "modules": {},
             "classes": {
                 "GCCIModel": 1
@@ -25,7 +25,7 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "src\\assets\\js\\model.js",
+            "file": "src/assets/js/model-deferred.js",
             "line": 15,
             "description": "GCCI Model"
         }
@@ -33,26 +33,58 @@
     "elements": {},
     "classitems": [
         {
-            "file": "src\\assets\\js\\model.js",
+            "file": "src/assets/js/model-deferred.js",
             "line": 1,
             "description": "------------------------------------------\nName:    GCCI Model Script\nVersion: 1.0.0\nAuthor:  PZ\nDate:    2015-10-15\n------------------------------------------\n\nChange Log:\n\n1.0.0 (2015-10-15)\n- added basic model structure",
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 42,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 32,
+            "description": "Gets node by given node's id.",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "- given node's id"
+                }
+            ],
+            "return": {
+                "description": "node if found, else null",
+                "type": "Promise"
+            },
+            "class": "GCCIModel"
+        },
+        {
+            "file": "src/assets/js/model-deferred.js",
+            "line": 48,
+            "description": "Gets firebase reference by given node's id.",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "- given node's id"
+                }
+            ],
+            "return": {
+                "description": "firebase reference if found, else null",
+                "type": "Promise"
+            },
+            "class": "GCCIModel"
+        },
+        {
+            "file": "src/assets/js/model-deferred.js",
+            "line": 64,
             "description": "Gets tree data structure with DFS.",
             "itemtype": "method",
             "name": "getTree",
             "return": {
                 "description": "an array of nodes",
-                "type": "Array"
+                "type": "Promise"
             },
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 61,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 82,
             "description": "Gets the children nodes of the given node.",
             "itemtype": "method",
             "name": "getChildren",
@@ -64,14 +96,14 @@
                 }
             ],
             "return": {
-                "description": "children nodes",
-                "type": "Array"
+                "description": "array of children nodes",
+                "type": "Promise"
             },
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 80,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 106,
             "description": "Gets the descendants nodes of the give node.",
             "itemtype": "method",
             "name": "getDescendants",
@@ -83,14 +115,14 @@
                 }
             ],
             "return": {
-                "description": "descendants nodes",
-                "type": "Array"
+                "description": "array of descendants nodes",
+                "type": "Promise"
             },
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 99,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 130,
             "description": "Gets the parent node of the given node.",
             "itemtype": "method",
             "name": "getParent",
@@ -103,13 +135,13 @@
             ],
             "return": {
                 "description": "parent node",
-                "type": "Object"
+                "type": "Promise"
             },
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 112,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 147,
             "description": "Gets the siblings nodes of the given node.",
             "itemtype": "method",
             "name": "getSiblings",
@@ -121,14 +153,14 @@
                 }
             ],
             "return": {
-                "description": "siblings nodes",
-                "type": "Array"
+                "description": "array of siblings nodes",
+                "type": "Promise"
             },
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 133,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 171,
             "description": "Adds a new node as a child to the given node.\nThe new node will be the new rightmost child.\nIf you want to insert a node at a specific position, use the addSibling() method.",
             "itemtype": "method",
             "name": "addChild",
@@ -144,11 +176,15 @@
                     "type": "Object"
                 }
             ],
+            "return": {
+                "description": "",
+                "type": "Promise"
+            },
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 152,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 212,
             "description": "Adds a new node as a sibling to the target node object.",
             "itemtype": "method",
             "name": "addSibling",
@@ -160,7 +196,7 @@
                 },
                 {
                     "name": "pos",
-                    "description": "possible values are: first, last, left, right",
+                    "description": "possible values are: left, right",
                     "type": "String"
                 },
                 {
@@ -172,8 +208,8 @@
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 199,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 251,
             "description": "Removes the given node and all its descendants.",
             "itemtype": "method",
             "name": "remove",
@@ -187,8 +223,8 @@
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 225,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 283,
             "description": "Moves the given node and all its descendants to a new position relative to another node.",
             "itemtype": "method",
             "name": "move",
@@ -212,164 +248,162 @@
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 273,
-            "description": "Helper\nGets node by given node's id.",
-            "params": [
-                {
-                    "name": "id",
-                    "description": "- given node's id"
-                }
-            ],
-            "return": {
-                "description": "node if found, else undefined",
-                "type": "Object"
-            },
+            "file": "src/assets/js/model-deferred.js",
+            "line": 328,
+            "description": "Updates the path of the given node and all of its descendants.\nThis is not a public API, do not call this directly.",
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 283,
-            "description": "Helper\nGets firebase reference by given node's id.",
-            "params": [
-                {
-                    "name": "id",
-                    "description": "- given node's id"
-                }
-            ],
-            "return": {
-                "description": "firebase reference if found, else null",
-                "type": "Object"
-            },
+            "file": "src/assets/js/model-deferred.js",
+            "line": 346,
+            "description": "Depth First Search\nThis is not a public API, do not call this directly.",
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 293,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 372,
+            "description": "Helper\nParses firebase snapshot.val() into an array of node objects.",
+            "class": "GCCIModel"
+        },
+        {
+            "file": "src/assets/js/model-deferred.js",
+            "line": 388,
+            "description": "Helper\nSorts nodes by path.",
+            "class": "GCCIModel"
+        },
+        {
+            "file": "src/assets/js/model-deferred.js",
+            "line": 398,
+            "description": "Helper\nChecks if 'descendant' node is a descendant of 'of' node.",
+            "class": "GCCIModel"
+        },
+        {
+            "file": "src/assets/js/model-deferred.js",
+            "line": 406,
             "description": "Helper\nCalculates path by shifting given path with specific step.",
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 301,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 414,
             "description": "Helper\nCalculates path by appending a path to a given one.",
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 309,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 422,
             "description": "Helper\nGets depth of given path.",
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 317,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 430,
             "description": "Helper\nGets path at a depth.",
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 325,
-            "description": "Helper\nUpdates the path of the given node and all of its descendants.",
-            "class": "GCCIModel"
-        },
-        {
-            "file": "src\\assets\\js\\model.js",
-            "line": 339,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 438,
             "description": "Helper\nGets parent's path value of the given node.",
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 347,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 446,
             "description": "Helper\nGets index at given depth.\nIf no depth specified, gets rightmost index.",
             "class": "GCCIModel"
         },
         {
-            "file": "src\\assets\\js\\model.js",
-            "line": 359,
+            "file": "src/assets/js/model-deferred.js",
+            "line": 458,
             "description": "Helper\nConverts index to path format.",
-            "class": "GCCIModel"
-        },
-        {
-            "file": "src\\assets\\js\\model.js",
-            "line": 367,
-            "description": "Helper\nDepth First Search",
             "class": "GCCIModel"
         }
     ],
     "warnings": [
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\assets\\js\\model.js:61"
+            "line": " src/assets/js/model-deferred.js:32"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\assets\\js\\model.js:80"
+            "line": " src/assets/js/model-deferred.js:48"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\assets\\js\\model.js:99"
+            "line": " src/assets/js/model-deferred.js:82"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\assets\\js\\model.js:112"
+            "line": " src/assets/js/model-deferred.js:106"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\assets\\js\\model.js:273"
+            "line": " src/assets/js/model-deferred.js:130"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\assets\\js\\model.js:283"
+            "line": " src/assets/js/model-deferred.js:147"
         },
         {
             "message": "Missing item type\n------------------------------------------\nName:    GCCI Model Script\nVersion: 1.0.0\nAuthor:  PZ\nDate:    2015-10-15\n------------------------------------------\n\nChange Log:\n\n1.0.0 (2015-10-15)\n- added basic model structure",
-            "line": " src\\assets\\js\\model.js:1"
+            "line": " src/assets/js/model-deferred.js:1"
         },
         {
-            "message": "Missing item type\nHelper\nGets node by given node's id.",
-            "line": " src\\assets\\js\\model.js:273"
+            "message": "Missing item type\nGets node by given node's id.",
+            "line": " src/assets/js/model-deferred.js:32"
         },
         {
-            "message": "Missing item type\nHelper\nGets firebase reference by given node's id.",
-            "line": " src\\assets\\js\\model.js:283"
+            "message": "Missing item type\nGets firebase reference by given node's id.",
+            "line": " src/assets/js/model-deferred.js:48"
+        },
+        {
+            "message": "Missing item type\nUpdates the path of the given node and all of its descendants.\nThis is not a public API, do not call this directly.",
+            "line": " src/assets/js/model-deferred.js:328"
+        },
+        {
+            "message": "Missing item type\nDepth First Search\nThis is not a public API, do not call this directly.",
+            "line": " src/assets/js/model-deferred.js:346"
+        },
+        {
+            "message": "Missing item type\nHelper\nParses firebase snapshot.val() into an array of node objects.",
+            "line": " src/assets/js/model-deferred.js:372"
+        },
+        {
+            "message": "Missing item type\nHelper\nSorts nodes by path.",
+            "line": " src/assets/js/model-deferred.js:388"
+        },
+        {
+            "message": "Missing item type\nHelper\nChecks if 'descendant' node is a descendant of 'of' node.",
+            "line": " src/assets/js/model-deferred.js:398"
         },
         {
             "message": "Missing item type\nHelper\nCalculates path by shifting given path with specific step.",
-            "line": " src\\assets\\js\\model.js:293"
+            "line": " src/assets/js/model-deferred.js:406"
         },
         {
             "message": "Missing item type\nHelper\nCalculates path by appending a path to a given one.",
-            "line": " src\\assets\\js\\model.js:301"
+            "line": " src/assets/js/model-deferred.js:414"
         },
         {
             "message": "Missing item type\nHelper\nGets depth of given path.",
-            "line": " src\\assets\\js\\model.js:309"
+            "line": " src/assets/js/model-deferred.js:422"
         },
         {
             "message": "Missing item type\nHelper\nGets path at a depth.",
-            "line": " src\\assets\\js\\model.js:317"
-        },
-        {
-            "message": "Missing item type\nHelper\nUpdates the path of the given node and all of its descendants.",
-            "line": " src\\assets\\js\\model.js:325"
+            "line": " src/assets/js/model-deferred.js:430"
         },
         {
             "message": "Missing item type\nHelper\nGets parent's path value of the given node.",
-            "line": " src\\assets\\js\\model.js:339"
+            "line": " src/assets/js/model-deferred.js:438"
         },
         {
             "message": "Missing item type\nHelper\nGets index at given depth.\nIf no depth specified, gets rightmost index.",
-            "line": " src\\assets\\js\\model.js:347"
+            "line": " src/assets/js/model-deferred.js:446"
         },
         {
             "message": "Missing item type\nHelper\nConverts index to path format.",
-            "line": " src\\assets\\js\\model.js:359"
-        },
-        {
-            "message": "Missing item type\nHelper\nDepth First Search",
-            "line": " src\\assets\\js\\model.js:367"
+            "line": " src/assets/js/model-deferred.js:458"
         }
     ]
 }

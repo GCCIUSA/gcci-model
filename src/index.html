@@ -70,13 +70,13 @@
                 </md-button>
                 <md-menu-content width="4">
                     <md-menu-item>
-                        <md-button>
+                        <md-button ng-click="main.addSibling(node, 'left', $event)">
                             <md-icon md-font-icon="fa-angle-up" class="fa" md-menu-align-target></md-icon>
                             add sibling above
                         </md-button>
                     </md-menu-item>
                     <md-menu-item>
-                        <md-button>
+                        <md-button ng-click="main.addSibling(node, 'right', $event)">
                             <md-icon md-font-icon="fa-angle-down" class="fa" md-menu-align-target></md-icon>
                             add sibling below
                         </md-button>

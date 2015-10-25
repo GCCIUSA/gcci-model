@@ -56,8 +56,28 @@ export class MainCtrl {
         });
     }
 
-    addSibling(target, pos) {
+    addSibling(target, pos, evt) {
+        this.$mdDialog.show({
+            controller: ["$scope", "$mdDialog",
+                ($scope, $mdDialog) => {
+                    $scope.cancel = () => {
+                        $mdDialog.cancel();
+                    };
 
+                    $scope.save = () => {
+                        $mdDialog.hide({
+                            "title": $scope.title,
+                            "email": $scope.email
+                        });
+                    };
+                }
+            ],
+            templateUrl: 'assets/md-templates/node-editor.html',
+            parent: angular.element(document.body),
+            targetEvent: evt
+        }).then((data) => {
+            this.$rootScope.model.addSibling(target, pos, {"title": data.title, "uid": data.email});
+        });
     }
 
     remove(node, evt) {
