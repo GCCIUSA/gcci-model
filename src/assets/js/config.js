@@ -1,4 +1,5 @@
 import { GCCIModel } from "./model-deferred";
+import { API } from "../libs/gcci-model/api";
 import { UtilService } from "./service";
 import { MainCtrl } from "./controller";
 
@@ -19,7 +20,9 @@ app.config(["$httpProvider",
 
 app.run(["$rootScope",
     ($rootScope) => {
+        $rootScope.ref = new Firebase("https://gcci-model.firebaseio.com");
         $rootScope.model = new GCCIModel();
+        $rootScope.api = new API($rootScope.ref);
     }
 ]);
 

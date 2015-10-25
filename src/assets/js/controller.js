@@ -15,7 +15,7 @@ export class MainCtrl {
     }
 
     loadTree() {
-        this.$rootScope.model.getTree().then((data) => {
+        this.$rootScope.api.getTree().then((data) => {
             this.$rootScope.$apply(() => {
                 this.tree = data;
             });
@@ -30,6 +30,9 @@ export class MainCtrl {
         return (depth - 2) * 40;
     }
 
+    /**
+     * Adds a new node as a rightmost child of the target node.
+     */
     addChild(target, evt) {
         this.$mdDialog.show({
             controller: ["$scope", "$mdDialog",
@@ -50,8 +53,25 @@ export class MainCtrl {
             parent: angular.element(document.body),
             targetEvent: evt
         }).then((data) => {
-            this.$rootScope.model.addChild(target, { "title": data.title, "uid": data.email }).then(() => {
-                this.loadTree();
+            this.$rootScope.api.getChildren(target).then((children) => {
+                // calculate new node's path
+                let childIndex = children.length > 0 ? this.getNodeIndex(children[children.length - 1]) + 1 : 1;
+                let childPath = target.path + this.indexToPath(childIndex);
+
+                // insert new node
+                this.$rootScope.ref.push({
+                    "title": data.title,
+                    "uid": data.email,
+                    "path": childPath,
+                    "depth": this.getPathDepth(childPath)
+                }, (error) => {
+                    if (error) {
+                        throw error;
+                    }
+                    else {
+                        this.loadTree();
+                    }
+                });
             });
         });
     }
@@ -95,6 +115,22 @@ export class MainCtrl {
 
     move(node, target, pos) {
 
+    }
+
+    getPathDepth(path) {
+        return path.length / 4;
+    }
+
+    getNodeIndex(node) {
+        return parseInt(node.path.substr(node.path.length - 4));
+    }
+
+    pathToIndex(path) {
+        return parseInt(path);
+    }
+
+    indexToPath(index) {
+        return (10000 + index).toString().substr(1);
     }
 }
 
