@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "logo": "../imgs/jsdoc_logo.jpg",
   "options": {
-    "paths": ["./src/assets/js"],
+    "paths": ["./src/assets/libs/gcci-model"],
     "outdir": "./src/assets/jsdoc"
   }
 }

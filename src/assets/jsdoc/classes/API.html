@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>GCCIModel - GCCI Model API</title>
+    <title>API - GCCI Model API</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -38,7 +38,7 @@
                 
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
-                                <li><a href="../classes/GCCIModel.html">GCCIModel</a></li>
+                                <li><a href="../classes/API.html">API</a></li>
                             </ul>
                 
                 
@@ -76,12 +76,12 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<h1>GCCIModel Class</h1>
+<h1>API Class</h1>
 <div class="box meta">
 
 
         <div class="foundat">
-            Defined in: <a href="../files/src_assets_js_model-deferred.js.html#l15"><code>src&#x2F;assets&#x2F;js&#x2F;model-deferred.js:15</code></a>
+            Defined in: <a href="../files/src_assets_libs_gcci-model_api.js.html#l1"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:1</code></a>
         </div>
 
 
@@ -89,7 +89,7 @@
 
 
 <div class="box intro">
-    <p>GCCI Model</p>
+    <p>GCCI Model API</p>
 
 </div>
 
@@ -109,12 +109,20 @@
                     <h3>Methods</h3>
 
                     <ul class="index-list methods">
-                            <li class="index-item method">
-                                <a href="#method_addChild">addChild</a>
+                            <li class="index-item method private">
+                                <a href="#method__calcParentPath">_calcParentPath</a>
 
                             </li>
-                            <li class="index-item method">
-                                <a href="#method_addSibling">addSibling</a>
+                            <li class="index-item method private">
+                                <a href="#method__isRoot">_isRoot</a>
+
+                            </li>
+                            <li class="index-item method private">
+                                <a href="#method__parse">_parse</a>
+
+                            </li>
+                            <li class="index-item method private">
+                                <a href="#method__sort">_sort</a>
 
                             </li>
                             <li class="index-item method">
@@ -123,6 +131,14 @@
                             </li>
                             <li class="index-item method">
                                 <a href="#method_getDescendants">getDescendants</a>
+
+                            </li>
+                            <li class="index-item method">
+                                <a href="#method_getNode">getNode</a>
+
+                            </li>
+                            <li class="index-item method">
+                                <a href="#method_getNodeRef">getNodeRef</a>
 
                             </li>
                             <li class="index-item method">
@@ -137,14 +153,6 @@
                                 <a href="#method_getTree">getTree</a>
 
                             </li>
-                            <li class="index-item method">
-                                <a href="#method_move">move</a>
-
-                            </li>
-                            <li class="index-item method">
-                                <a href="#method_remove">remove</a>
-
-                            </li>
                     </ul>
                 </div>
 
@@ -155,25 +163,23 @@
             <div id="methods" class="api-class-tabpanel">
                 <h2 class="off-left">Methods</h2>
 
-<div id="method_addChild" class="method item">
-    <h3 class="name"><code>addChild</code></h3>
+<div id="method__calcParentPath" class="method item private">
+    <h3 class="name"><code>_calcParentPath</code></h3>
 
         <div class="args">
             <span class="paren">(</span><ul class="args-list inline commas">
                 <li class="arg">
-                        <code>target</code>
-                </li>
-                <li class="arg">
-                        <code>data</code>
+                        <code>node</code>
                 </li>
             </ul><span class="paren">)</span>
         </div>
 
         <span class="returns-inline">
-            <span class="type">Promise</span>
+            <span class="type"></span>
         </span>
 
 
+        <span class="flag private">private</span>
 
 
 
@@ -182,7 +188,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_js_model-deferred.js.html#l171"><code>src&#x2F;assets&#x2F;js&#x2F;model-deferred.js:171</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l174"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:174</code></a>
         </p>
 
 
@@ -190,9 +196,7 @@
     </div>
 
     <div class="description">
-        <p>Adds a new node as a child to the given node.
-The new node will be the new rightmost child.
-If you want to insert a node at a specific position, use the addSibling() method.</p>
+        <p>Calculates parent node's path of given node.</p>
 
     </div>
 
@@ -201,23 +205,12 @@ If you want to insert a node at a specific position, use the addSibling() method
 
             <ul class="params-list">
                 <li class="param">
-                        <code class="param-name">target</code>
+                        <code class="param-name">node</code>
                         <span class="type">Object</span>
 
 
                     <div class="param-description">
-                        <p>target node</p>
-
-                    </div>
-
-                </li>
-                <li class="param">
-                        <code class="param-name">data</code>
-                        <span class="type">Object</span>
-
-
-                    <div class="param-description">
-                        <p>new node's data</p>
+                        <p>given node.</p>
 
                     </div>
 
@@ -229,31 +222,31 @@ If you want to insert a node at a specific position, use the addSibling() method
             <h4>Returns:</h4>
 
             <div class="returns-description">
-                        <span class="type">Promise</span>:
+                        <span class="type"></span>:
+                    <p>parent node's path, null if give node is root node.</p>
+
             </div>
         </div>
 
 
 </div>
-<div id="method_addSibling" class="method item">
-    <h3 class="name"><code>addSibling</code></h3>
+<div id="method__isRoot" class="method item private">
+    <h3 class="name"><code>_isRoot</code></h3>
 
         <div class="args">
             <span class="paren">(</span><ul class="args-list inline commas">
                 <li class="arg">
-                        <code>target</code>
-                </li>
-                <li class="arg">
-                        <code>pos</code>
-                </li>
-                <li class="arg">
-                        <code>data</code>
+                        <code>node</code>
                 </li>
             </ul><span class="paren">)</span>
         </div>
 
+        <span class="returns-inline">
+            <span class="type">Boolean</span>
+        </span>
 
 
+        <span class="flag private">private</span>
 
 
 
@@ -262,7 +255,7 @@ If you want to insert a node at a specific position, use the addSibling() method
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_js_model-deferred.js.html#l212"><code>src&#x2F;assets&#x2F;js&#x2F;model-deferred.js:212</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l162"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:162</code></a>
         </p>
 
 
@@ -270,7 +263,7 @@ If you want to insert a node at a specific position, use the addSibling() method
     </div>
 
     <div class="description">
-        <p>Adds a new node as a sibling to the target node object.</p>
+        <p>Checks if give node is a root node.</p>
 
     </div>
 
@@ -279,34 +272,157 @@ If you want to insert a node at a specific position, use the addSibling() method
 
             <ul class="params-list">
                 <li class="param">
-                        <code class="param-name">target</code>
+                        <code class="param-name">node</code>
                         <span class="type">Object</span>
 
 
                     <div class="param-description">
-                        <p>target node</p>
+                        <p>give node.</p>
+
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">Boolean</span>:
+                    <p>true if is root, else false.</p>
+
+            </div>
+        </div>
+
+
+</div>
+<div id="method__parse" class="method item private">
+    <h3 class="name"><code>_parse</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>snapshotVal</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+        <span class="returns-inline">
+            <span class="type">Array</span>
+        </span>
+
+
+        <span class="flag private">private</span>
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l189"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:189</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Parses firebase snapshot object into an array of node objects.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">snapshotVal</code>
+                        <span class="type">Object</span>
+
+
+                    <div class="param-description">
+                        <p>firebase snapshot object.</p>
+
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">Array</span>:
+                    <p>node objects.</p>
+
+            </div>
+        </div>
+
+
+</div>
+<div id="method__sort" class="method item private">
+    <h3 class="name"><code>_sort</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>nodes</code>
+                </li>
+                <li class="arg">
+                        <code>prop</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+
+
+        <span class="flag private">private</span>
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l209"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:209</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Sorts an array of node objects by a property of node object.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">nodes</code>
+                        <span class="type">Object</span>
+
+
+                    <div class="param-description">
+                        <p>array of node objects.</p>
 
                     </div>
 
                 </li>
                 <li class="param">
-                        <code class="param-name">pos</code>
-                        <span class="type">String</span>
-
-
-                    <div class="param-description">
-                        <p>possible values are: left, right</p>
-
-                    </div>
-
-                </li>
-                <li class="param">
-                        <code class="param-name">data</code>
+                        <code class="param-name">prop</code>
                         <span class="type">Object</span>
 
 
                     <div class="param-description">
-                        <p>new node's data</p>
+                        <p>property of node object.</p>
 
                     </div>
 
@@ -341,7 +457,7 @@ If you want to insert a node at a specific position, use the addSibling() method
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_js_model-deferred.js.html#l82"><code>src&#x2F;assets&#x2F;js&#x2F;model-deferred.js:82</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l86"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:86</code></a>
         </p>
 
 
@@ -349,7 +465,7 @@ If you want to insert a node at a specific position, use the addSibling() method
     </div>
 
     <div class="description">
-        <p>Gets the children nodes of the given node.</p>
+        <p>Retrieves an array of children of node object.</p>
 
     </div>
 
@@ -363,7 +479,7 @@ If you want to insert a node at a specific position, use the addSibling() method
 
 
                     <div class="param-description">
-                        <p>given node</p>
+                        <p>node object.</p>
 
                     </div>
 
@@ -376,7 +492,7 @@ If you want to insert a node at a specific position, use the addSibling() method
 
             <div class="returns-description">
                         <span class="type">Promise</span>:
-                    <p>array of children nodes</p>
+                    <p>array of children.</p>
 
             </div>
         </div>
@@ -407,7 +523,7 @@ If you want to insert a node at a specific position, use the addSibling() method
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_js_model-deferred.js.html#l106"><code>src&#x2F;assets&#x2F;js&#x2F;model-deferred.js:106</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l112"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:112</code></a>
         </p>
 
 
@@ -415,7 +531,7 @@ If you want to insert a node at a specific position, use the addSibling() method
     </div>
 
     <div class="description">
-        <p>Gets the descendants nodes of the give node.</p>
+        <p>Retrieves an array of descendants of node object.</p>
 
     </div>
 
@@ -429,7 +545,7 @@ If you want to insert a node at a specific position, use the addSibling() method
 
 
                     <div class="param-description">
-                        <p>given node</p>
+                        <p>node object.</p>
 
                     </div>
 
@@ -442,7 +558,139 @@ If you want to insert a node at a specific position, use the addSibling() method
 
             <div class="returns-description">
                         <span class="type">Promise</span>:
-                    <p>array of descendants nodes</p>
+                    <p>array of descendants</p>
+
+            </div>
+        </div>
+
+
+</div>
+<div id="method_getNode" class="method item">
+    <h3 class="name"><code>getNode</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>id</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+        <span class="returns-inline">
+            <span class="type">Promise</span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l11"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:11</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Retrieves node object by id.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">id</code>
+                        <span class="type">Object</span>
+
+
+                    <div class="param-description">
+                        <p>node id.</p>
+
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">Promise</span>:
+                    <p>node object.</p>
+
+            </div>
+        </div>
+
+
+</div>
+<div id="method_getNodeRef" class="method item">
+    <h3 class="name"><code>getNodeRef</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>node</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+        <span class="returns-inline">
+            <span class="type">Promise</span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l28"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:28</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Retrieves firebase reference of node object</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">node</code>
+                        <span class="type">Object</span>
+
+
+                    <div class="param-description">
+                        <p>node object.</p>
+
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">Promise</span>:
+                    <p>firebase reference.</p>
 
             </div>
         </div>
@@ -473,7 +721,7 @@ If you want to insert a node at a specific position, use the addSibling() method
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_js_model-deferred.js.html#l130"><code>src&#x2F;assets&#x2F;js&#x2F;model-deferred.js:130</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l64"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:64</code></a>
         </p>
 
 
@@ -481,7 +729,7 @@ If you want to insert a node at a specific position, use the addSibling() method
     </div>
 
     <div class="description">
-        <p>Gets the parent node of the given node.</p>
+        <p>Retrieves parent node object of node object.</p>
 
     </div>
 
@@ -495,7 +743,9 @@ If you want to insert a node at a specific position, use the addSibling() method
 
 
                     <div class="param-description">
-                        <p>given node</p>
+                        <ul>
+<li>node object.</li>
+</ul>
 
                     </div>
 
@@ -508,7 +758,7 @@ If you want to insert a node at a specific position, use the addSibling() method
 
             <div class="returns-description">
                         <span class="type">Promise</span>:
-                    <p>parent node</p>
+                    <p>parent node object.</p>
 
             </div>
         </div>
@@ -539,7 +789,7 @@ If you want to insert a node at a specific position, use the addSibling() method
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_js_model-deferred.js.html#l147"><code>src&#x2F;assets&#x2F;js&#x2F;model-deferred.js:147</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l137"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:137</code></a>
         </p>
 
 
@@ -547,7 +797,7 @@ If you want to insert a node at a specific position, use the addSibling() method
     </div>
 
     <div class="description">
-        <p>Gets the siblings nodes of the given node.</p>
+        <p>Retrieves an array of siblings of node object.</p>
 
     </div>
 
@@ -561,7 +811,7 @@ If you want to insert a node at a specific position, use the addSibling() method
 
 
                     <div class="param-description">
-                        <p>given node</p>
+                        <p>node object.</p>
 
                     </div>
 
@@ -574,7 +824,7 @@ If you want to insert a node at a specific position, use the addSibling() method
 
             <div class="returns-description">
                         <span class="type">Promise</span>:
-                    <p>array of siblings nodes</p>
+                    <p>array of siblings</p>
 
             </div>
         </div>
@@ -599,7 +849,7 @@ If you want to insert a node at a specific position, use the addSibling() method
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_js_model-deferred.js.html#l64"><code>src&#x2F;assets&#x2F;js&#x2F;model-deferred.js:64</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l45"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:45</code></a>
         </p>
 
 
@@ -607,7 +857,7 @@ If you want to insert a node at a specific position, use the addSibling() method
     </div>
 
     <div class="description">
-        <p>Gets tree data structure with DFS.</p>
+        <p>Retrieves an array of node objects ordered as DFS.</p>
 
     </div>
 
@@ -617,146 +867,10 @@ If you want to insert a node at a specific position, use the addSibling() method
 
             <div class="returns-description">
                         <span class="type">Promise</span>:
-                    <p>an array of nodes</p>
+                    <p>array of node objects.</p>
 
             </div>
         </div>
-
-
-</div>
-<div id="method_move" class="method item">
-    <h3 class="name"><code>move</code></h3>
-
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-                <li class="arg">
-                        <code>node</code>
-                </li>
-                <li class="arg">
-                        <code>target</code>
-                </li>
-                <li class="arg">
-                        <code>pos</code>
-                </li>
-            </ul><span class="paren">)</span>
-        </div>
-
-
-
-
-
-
-
-
-    <div class="meta">
-                <p>
-                Defined in
-        <a href="../files/src_assets_js_model-deferred.js.html#l283"><code>src&#x2F;assets&#x2F;js&#x2F;model-deferred.js:283</code></a>
-        </p>
-
-
-
-    </div>
-
-    <div class="description">
-        <p>Moves the given node and all its descendants to a new position relative to another node.</p>
-
-    </div>
-
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-                <li class="param">
-                        <code class="param-name">node</code>
-                        <span class="type">Object</span>
-
-
-                    <div class="param-description">
-                        <p>given node</p>
-
-                    </div>
-
-                </li>
-                <li class="param">
-                        <code class="param-name">target</code>
-                        <span class="type">Object</span>
-
-
-                    <div class="param-description">
-                        <p>target node</p>
-
-                    </div>
-
-                </li>
-                <li class="param">
-                        <code class="param-name">pos</code>
-                        <span class="type">String</span>
-
-
-                    <div class="param-description">
-                        <p>possible values are: child, left, right</p>
-
-                    </div>
-
-                </li>
-            </ul>
-        </div>
-
-
-
-</div>
-<div id="method_remove" class="method item">
-    <h3 class="name"><code>remove</code></h3>
-
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-                <li class="arg">
-                        <code>node</code>
-                </li>
-            </ul><span class="paren">)</span>
-        </div>
-
-
-
-
-
-
-
-
-    <div class="meta">
-                <p>
-                Defined in
-        <a href="../files/src_assets_js_model-deferred.js.html#l251"><code>src&#x2F;assets&#x2F;js&#x2F;model-deferred.js:251</code></a>
-        </p>
-
-
-
-    </div>
-
-    <div class="description">
-        <p>Removes the given node and all its descendants.</p>
-
-    </div>
-
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-                <li class="param">
-                        <code class="param-name">node</code>
-                        <span class="type">Object</span>
-
-
-                    <div class="param-description">
-                        <p>given node</p>
-
-                    </div>
-
-                </li>
-            </ul>
-        </div>
-
 
 
 </div>

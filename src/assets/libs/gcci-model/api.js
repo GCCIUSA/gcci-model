@@ -8,6 +8,13 @@ class API {
         this.ref = ref;
     }
 
+    /**
+     * Retrieves node object by id.
+     *
+     * @method getNode
+     * @param id node id.
+     * @returns {Promise} node object.
+     */
     getNode(id) {
         let deferred = $.Deferred();
 
@@ -18,6 +25,13 @@ class API {
         return deferred.promise();
     }
 
+    /**
+     * Retrieves firebase reference of node object
+     *
+     * @method getNodeRef
+     * @param node node object.
+     * @returns {Promise} firebase reference.
+     */
     getNodeRef(node) {
         let deferred = $.Deferred();
 
@@ -28,6 +42,12 @@ class API {
         return deferred.promise();
     }
 
+    /**
+     * Retrieves an array of node objects ordered as DFS.
+     *
+     * @method getTree
+     * @returns {Promise} array of node objects.
+     */
     getTree() {
         let deferred = $.Deferred();
 
@@ -41,6 +61,13 @@ class API {
         return deferred.promise();
     }
 
+    /**
+     * Retrieves parent node object of node object.
+     *
+     * @method getParent
+     * @param node - node object.
+     * @returns {Promise} parent node object.
+     */
     getParent(node) {
         let deferred = $.Deferred();
 
@@ -56,6 +83,14 @@ class API {
         return deferred.promise();
     }
 
+    /**
+     *
+     * Retrieves an array of children of node object.
+     *
+     * @method getChildren
+     * @param node node object.
+     * @returns {Promise} array of children.
+     */
     getChildren(node) {
         let deferred = $.Deferred();
 
@@ -74,6 +109,13 @@ class API {
         return deferred.promise();
     }
 
+    /**
+     * Retrieves an array of descendants of node object.
+     *
+     * @method getDescendants
+     * @param node node object.
+     * @returns {Promise} array of descendants
+     */
     getDescendants(node) {
         let deferred = $.Deferred();
 
@@ -92,6 +134,13 @@ class API {
         return deferred.promise();
     }
 
+    /**
+     * Retrieves an array of siblings of node object.
+     *
+     * @method getSiblings
+     * @param node node object.
+     * @returns {Promise} array of siblings
+     */
     getSiblings(node) {
         let deferred = $.Deferred();
 
@@ -113,6 +162,7 @@ class API {
     /**
      * Checks if give node is a root node.
      *
+     * @method _isRoot
      * @param node give node.
      * @returns {boolean} true if is root, else false.
      * @private
@@ -124,6 +174,7 @@ class API {
     /**
      * Calculates parent node's path of given node.
      *
+     * @method _calcParentPath
      * @param node given node.
      * @returns {*} parent node's path, null if give node is root node.
      * @private
@@ -138,6 +189,7 @@ class API {
     /**
      * Parses firebase snapshot object into an array of node objects.
      *
+     * @method _parse
      * @param snapshotVal firebase snapshot object.
      * @returns {Array} node objects.
      * @private
@@ -157,6 +209,7 @@ class API {
     /**
      * Sorts an array of node objects by a property of node object.
      *
+     * @method _sort
      * @param nodes array of node objects.
      * @param prop property of node object.
      * @private
