@@ -3,7 +3,7 @@
  *
  * @class API
  */
-class API {
+export class API {
     constructor(ref) {
         this.ref = ref;
     }
@@ -197,10 +197,12 @@ class API {
     _parse(snapshotVal) {
         let parsed = [];
 
-        for (let key of Object.keys(snapshotVal)) {
-            let obj = snapshotVal[key];
-            obj["id"] = key;
-            parsed.push(obj);
+        if (snapshotVal) {
+            for (let key of Object.keys(snapshotVal)) {
+                let obj = snapshotVal[key];
+                obj["id"] = key;
+                parsed.push(obj);
+            }
         }
 
         return parsed;
