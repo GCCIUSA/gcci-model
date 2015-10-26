@@ -140,7 +140,30 @@ export class MainCtrl {
                 .ok("Confirm")
                 .cancel("Cancel")
         ).then(() => {
+            this.$rootScope.api.getSiblings(node).then((siblings) => {
+                let rightSiblings = [],
+                    nodeIndex = this.getNodeIndex(node);
 
+                // get right siblings of node
+                for (let n of siblings) {
+                    if (this.getNodeIndex(n) > nodeIndex) {
+                        rightSiblings.push(n);
+                    }
+                }
+
+                // remove node and all of its descendants
+                this.$rootScope.api.getDescendants(node).then((descendants) => {
+                    this.$rootScope.api.getNodeRef(node).remove();
+                    for (let n of descendants) {
+                        this.$rootScope.api.getNodeRef(n).remove();
+                    }
+                });
+
+                // update path of right siblings
+                for (let n of rightSiblings) {
+                    this.updatePath(n, this.getPathByShiftingIndex(n, -1));
+                }
+            });
         });
     }
 
