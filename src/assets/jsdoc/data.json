@@ -37,7 +37,7 @@
             "line": 11,
             "description": "Retrieves node object by id.",
             "itemtype": "method",
-            "name": "getNode",
+            "name": "getNodeById",
             "params": [
                 {
                     "name": "id",
@@ -53,6 +53,24 @@
         {
             "file": "src/assets/libs/gcci-model/api.js",
             "line": 28,
+            "description": "Retrieves node object by path.",
+            "itemtype": "method",
+            "name": "getNodeByPath",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "node path."
+                }
+            ],
+            "return": {
+                "description": "node object.",
+                "type": "Promise"
+            },
+            "class": "API"
+        },
+        {
+            "file": "src/assets/libs/gcci-model/api.js",
+            "line": 45,
             "description": "Retrieves firebase reference of node object",
             "itemtype": "method",
             "name": "getNodeRef",
@@ -70,7 +88,7 @@
         },
         {
             "file": "src/assets/libs/gcci-model/api.js",
-            "line": 45,
+            "line": 62,
             "description": "Retrieves an array of node objects ordered as DFS.",
             "itemtype": "method",
             "name": "getTree",
@@ -82,7 +100,7 @@
         },
         {
             "file": "src/assets/libs/gcci-model/api.js",
-            "line": 64,
+            "line": 81,
             "description": "Retrieves parent node object of node object.",
             "itemtype": "method",
             "name": "getParent",
@@ -100,7 +118,7 @@
         },
         {
             "file": "src/assets/libs/gcci-model/api.js",
-            "line": 86,
+            "line": 103,
             "description": "Retrieves an array of children of node object.",
             "itemtype": "method",
             "name": "getChildren",
@@ -118,7 +136,7 @@
         },
         {
             "file": "src/assets/libs/gcci-model/api.js",
-            "line": 112,
+            "line": 129,
             "description": "Retrieves an array of descendants of node object.",
             "itemtype": "method",
             "name": "getDescendants",
@@ -136,7 +154,7 @@
         },
         {
             "file": "src/assets/libs/gcci-model/api.js",
-            "line": 137,
+            "line": 154,
             "description": "Retrieves an array of siblings of node object.",
             "itemtype": "method",
             "name": "getSiblings",
@@ -154,7 +172,7 @@
         },
         {
             "file": "src/assets/libs/gcci-model/api.js",
-            "line": 162,
+            "line": 179,
             "description": "Checks if give node is a root node.",
             "itemtype": "method",
             "name": "_isRoot",
@@ -174,7 +192,7 @@
         },
         {
             "file": "src/assets/libs/gcci-model/api.js",
-            "line": 174,
+            "line": 191,
             "description": "Calculates parent node's path of given node.",
             "itemtype": "method",
             "name": "_calcParentPath",
@@ -194,7 +212,7 @@
         },
         {
             "file": "src/assets/libs/gcci-model/api.js",
-            "line": 189,
+            "line": 206,
             "description": "Parses firebase snapshot object into an array of node objects.",
             "itemtype": "method",
             "name": "_parse",
@@ -214,7 +232,7 @@
         },
         {
             "file": "src/assets/libs/gcci-model/api.js",
-            "line": 209,
+            "line": 228,
             "description": "Sorts an array of node objects by a property of node object.",
             "itemtype": "method",
             "name": "_sort",
@@ -248,31 +266,35 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/assets/libs/gcci-model/api.js:64"
+            "line": " src/assets/libs/gcci-model/api.js:62"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/assets/libs/gcci-model/api.js:86"
+            "line": " src/assets/libs/gcci-model/api.js:81"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/assets/libs/gcci-model/api.js:112"
+            "line": " src/assets/libs/gcci-model/api.js:103"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/assets/libs/gcci-model/api.js:137"
+            "line": " src/assets/libs/gcci-model/api.js:129"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/assets/libs/gcci-model/api.js:162"
+            "line": " src/assets/libs/gcci-model/api.js:154"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/assets/libs/gcci-model/api.js:174"
+            "line": " src/assets/libs/gcci-model/api.js:179"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/assets/libs/gcci-model/api.js:189"
+            "line": " src/assets/libs/gcci-model/api.js:191"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/assets/libs/gcci-model/api.js:206"
         }
     ]
 }

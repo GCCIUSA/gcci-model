@@ -85,7 +85,7 @@
  *
  * @class API
  */
-class API {
+export class API {
     constructor(ref) {
         this.ref = ref;
     }
@@ -93,14 +93,31 @@ class API {
     /**
      * Retrieves node object by id.
      *
-     * @method getNode
+     * @method getNodeById
      * @param id node id.
      * @returns {Promise} node object.
      */
-    getNode(id) {
+    getNodeById(id) {
         let deferred = $.Deferred();
 
         this.ref.orderByKey().equalTo(id).once(&quot;child_added&quot;, (snapshot) =&gt; {
+            deferred.resolve(snapshot.val());
+        });
+
+        return deferred.promise();
+    }
+
+    /**
+     * Retrieves node object by path.
+     *
+     * @method getNodeByPath
+     * @param path node path.
+     * @returns {Promise} node object.
+     */
+    getNodeByPath(path) {
+        let deferred = $.Deferred();
+
+        this.ref.orderByChild(&quot;path&quot;).equalTo(path).once(&quot;child_added&quot;, (snapshot) =&gt; {
             deferred.resolve(snapshot.val());
         });
 
@@ -279,10 +296,12 @@ class API {
     _parse(snapshotVal) {
         let parsed = [];
 
-        for (let key of Object.keys(snapshotVal)) {
-            let obj = snapshotVal[key];
-            obj[&quot;id&quot;] = key;
-            parsed.push(obj);
+        if (snapshotVal) {
+            for (let key of Object.keys(snapshotVal)) {
+                let obj = snapshotVal[key];
+                obj[&quot;id&quot;] = key;
+                parsed.push(obj);
+            }
         }
 
         return parsed;

@@ -55,15 +55,15 @@ export class MainCtrl {
         }).then((data) => {
             this.$rootScope.api.getChildren(target).then((children) => {
                 // calculate new node's path
-                let childIndex = children.length > 0 ? this.getNodeIndex(children[children.length - 1]) + 1 : 1;
-                let childPath = target.path + this.indexToPath(childIndex);
+                let newNodeIndex = children.length > 0 ? this.getNodeIndex(children[children.length - 1]) + 1 : 1;
+                let newNodePath = target.path + this.indexToPath(newNodeIndex);
 
                 // insert new node
                 this.$rootScope.ref.push({
                     "title": data.title,
                     "uid": data.email,
-                    "path": childPath,
-                    "depth": this.getPathDepth(childPath)
+                    "path": newNodePath,
+                    "depth": this.getDepth(newNodePath)
                 }, (error) => {
                     if (error) {
                         throw error;
@@ -76,6 +76,10 @@ export class MainCtrl {
         });
     }
 
+    /**
+     * Adds a new node as a sibling of the given target.
+     * Available pos are: "left", "right".
+     */
     addSibling(target, pos, evt) {
         this.$mdDialog.show({
             controller: ["$scope", "$mdDialog",
@@ -96,7 +100,34 @@ export class MainCtrl {
             parent: angular.element(document.body),
             targetEvent: evt
         }).then((data) => {
-            this.$rootScope.model.addSibling(target, pos, {"title": data.title, "uid": data.email});
+            this.$rootScope.api.getSiblings(target).then((siblings) => {
+                let rightSiblings = [],
+                    targetIndex = this.getNodeIndex(target);
+
+                // get right siblings of the target.
+                for (let n of siblings) {
+                    if (this.getNodeIndex(n) > targetIndex) {
+                        rightSiblings.push(n);
+                    }
+                }
+
+                // insert new node
+                let newNodePath = pos === "left" ? target.path : this.getPathByShiftingIndex(target, 1);
+                this.$rootScope.ref.push({
+                    "title": data.title,
+                    "uid": data.email,
+                    "path": newNodePath,
+                    "depth": this.getDepth(newNodePath)
+                });
+
+                // includes target node into right siblings if pos === 'left'
+                if (pos === "left") {
+                    rightSiblings.splice(0, 0, target);
+                }
+                for (let n of rightSiblings) {
+                    this.updatePath(n, this.getPathByShiftingIndex(n, 1));
+                }
+            });
         });
     }
 
@@ -109,7 +140,7 @@ export class MainCtrl {
                 .ok("Confirm")
                 .cancel("Cancel")
         ).then(() => {
-            this.$rootScope.model.remove(node);
+
         });
     }
 
@@ -117,16 +148,38 @@ export class MainCtrl {
 
     }
 
-    getPathDepth(path) {
-        return path.length / 4;
+    /**
+     * Updates path of node and all of its descendants.
+     */
+    updatePath(node, newPath) {
+        // update descendants
+        this.$rootScope.api.getDescendants(node).then((descendants) => {
+            for (let n of descendants) {
+                let dNewPath = newPath + n.path.substr(node.path.length);
+                this.$rootScope.api.getNodeRef(n).update({
+                    "path": dNewPath,
+                    "depth": this.getDepth(dNewPath)
+                })
+            }
+        });
+
+        // update node
+        this.$rootScope.api.getNodeRef(node).update({
+            "path": newPath,
+            "depth": this.getDepth(newPath)
+        });
     }
 
     getNodeIndex(node) {
         return parseInt(node.path.substr(node.path.length - 4));
     }
+    
+    getPathByShiftingIndex(node, toShift) {
+        return node.path.substr(0, node.path.length - 4) + this.indexToPath(this.getNodeIndex(node) + toShift);
+    }
 
-    pathToIndex(path) {
-        return parseInt(path);
+    getDepth(path) {
+        return path.length / 4;
     }
 
     indexToPath(index) {

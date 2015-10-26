@@ -134,7 +134,11 @@
 
                             </li>
                             <li class="index-item method">
-                                <a href="#method_getNode">getNode</a>
+                                <a href="#method_getNodeById">getNodeById</a>
+
+                            </li>
+                            <li class="index-item method">
+                                <a href="#method_getNodeByPath">getNodeByPath</a>
 
                             </li>
                             <li class="index-item method">
@@ -188,7 +192,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_libs_gcci-model_api.js.html#l174"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:174</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l191"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:191</code></a>
         </p>
 
 
@@ -255,7 +259,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_libs_gcci-model_api.js.html#l162"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:162</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l179"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:179</code></a>
         </p>
 
 
@@ -322,7 +326,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_libs_gcci-model_api.js.html#l189"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:189</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l206"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:206</code></a>
         </p>
 
 
@@ -389,7 +393,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_libs_gcci-model_api.js.html#l209"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:209</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l228"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:228</code></a>
         </p>
 
 
@@ -457,7 +461,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_libs_gcci-model_api.js.html#l86"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:86</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l103"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:103</code></a>
         </p>
 
 
@@ -523,7 +527,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_libs_gcci-model_api.js.html#l112"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:112</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l129"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:129</code></a>
         </p>
 
 
@@ -565,8 +569,8 @@
 
 
 </div>
-<div id="method_getNode" class="method item">
-    <h3 class="name"><code>getNode</code></h3>
+<div id="method_getNodeById" class="method item">
+    <h3 class="name"><code>getNodeById</code></h3>
 
         <div class="args">
             <span class="paren">(</span><ul class="args-list inline commas">
@@ -631,6 +635,72 @@
 
 
 </div>
+<div id="method_getNodeByPath" class="method item">
+    <h3 class="name"><code>getNodeByPath</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>path</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+        <span class="returns-inline">
+            <span class="type">Promise</span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l28"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:28</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Retrieves node object by path.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">path</code>
+                        <span class="type">Object</span>
+
+
+                    <div class="param-description">
+                        <p>node path.</p>
+
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">Promise</span>:
+                    <p>node object.</p>
+
+            </div>
+        </div>
+
+
+</div>
 <div id="method_getNodeRef" class="method item">
     <h3 class="name"><code>getNodeRef</code></h3>
 
@@ -655,7 +725,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_libs_gcci-model_api.js.html#l28"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:28</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l45"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:45</code></a>
         </p>
 
 
@@ -721,7 +791,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_libs_gcci-model_api.js.html#l64"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:64</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l81"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:81</code></a>
         </p>
 
 
@@ -789,7 +859,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_libs_gcci-model_api.js.html#l137"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:137</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l154"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:154</code></a>
         </p>
 
 
@@ -849,7 +919,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_assets_libs_gcci-model_api.js.html#l45"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:45</code></a>
+        <a href="../files/src_assets_libs_gcci-model_api.js.html#l62"><code>src&#x2F;assets&#x2F;libs&#x2F;gcci-model&#x2F;api.js:62</code></a>
         </p>
 
 

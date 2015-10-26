@@ -11,14 +11,31 @@ export class API {
     /**
      * Retrieves node object by id.
      *
-     * @method getNode
+     * @method getNodeById
      * @param id node id.
      * @returns {Promise} node object.
      */
-    getNode(id) {
+    getNodeById(id) {
         let deferred = $.Deferred();
 
         this.ref.orderByKey().equalTo(id).once("child_added", (snapshot) => {
+            deferred.resolve(snapshot.val());
+        });
+
+        return deferred.promise();
+    }
+
+    /**
+     * Retrieves node object by path.
+     *
+     * @method getNodeByPath
+     * @param path node path.
+     * @returns {Promise} node object.
+     */
+    getNodeByPath(path) {
+        let deferred = $.Deferred();
+
+        this.ref.orderByChild("path").equalTo(path).once("child_added", (snapshot) => {
             deferred.resolve(snapshot.val());
         });
 
@@ -30,16 +47,10 @@ export class API {
      *
      * @method getNodeRef
      * @param node node object.
-     * @returns {Promise} firebase reference.
+     * @returns {Object} firebase reference.
      */
     getNodeRef(node) {
-        let deferred = $.Deferred();
-
-        this.ref.orderByKey().equalTo(node.id).once("child_added", (snapshot) => {
-            deferred.resolve(snapshot.ref());
-        });
-
-        return deferred.promise();
+        return this.ref.child(node.id);
     }
 
     /**
