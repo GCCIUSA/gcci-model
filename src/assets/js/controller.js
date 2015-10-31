@@ -1,5 +1,3 @@
-import { GCCIModel } from "./model-deferred";
-
 export class MainCtrl {
     constructor($rootScope, utilService, $mdDialog, $window) {
         this.$rootScope = $rootScope;

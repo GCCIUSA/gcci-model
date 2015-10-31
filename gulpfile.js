@@ -77,6 +77,14 @@ gulp.task("fonts", function () {
 });
 
 /**
+ * generate jsdoc
+ */
+ gulp.task("api-doc", function () {
+	 // plugins.run("yuidoc -t node_modules/yuidoc-bootstrap-theme -H node_modules/yuidoc-bootstrap-theme/helpers/helpers.js").exec()
+	 return gulp.src(["src/api/**/*.js"]).pipe(plugins.yuidoc.parser()).pipe(plugins.yuidoc.generator()).pipe(gulp.dest("src/api-doc"));
+ });
+
+/**
  * compile all tasks
  */
 gulp.task("compile", ["css", "fonts", "js-dev", "js-release"]);
