@@ -1,9 +1,9 @@
 import { API } from "../libs/gcci-model/api";
-import { UtilService } from "./service";
+import { UtilService, AuthService } from "./service";
 import { MainCtrl } from "./controller";
 
 
-let app = angular.module("app", ["ngMaterial"]);
+let app = angular.module("app", ["ngMaterial", "firebase"]);
 
 app.config(["$httpProvider",
     ($httpProvider) => {
@@ -26,5 +26,7 @@ app.run(["$rootScope",
 
 app
     .service("utilService", UtilService)
+    .service("authService", AuthService)
+
     .controller("MainCtrl", MainCtrl)
 ;

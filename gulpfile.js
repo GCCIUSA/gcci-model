@@ -15,8 +15,9 @@ var genPath = "./src/assets/gen";
 var jsSrc = function (isRelease) {
     var libs = gulp.src([
         assetPath + "/libs/jquery/jquery-2.1.4.min.js",
-        assetPath + "/libs/firebase/firebase.js",
         assetPath + "/libs/angular/angular.min.js",
+        assetPath + "/libs/firebase/firebase.js",
+        assetPath + "/libs/firebase/angularfire.min.js",
         assetPath + "/libs/angular/angular-aria.min.js",
         assetPath + "/libs/angular/angular-animate.min.js",
         assetPath + "/libs/angular-material/angular-material.min.js"

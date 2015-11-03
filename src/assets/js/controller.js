@@ -1,14 +1,18 @@
 export class MainCtrl {
-    constructor($rootScope, utilService, $mdDialog, $window) {
+    constructor($rootScope, utilService, $mdDialog, $http, authService) {
         this.$rootScope = $rootScope;
         this.utilService = utilService;
         this.$mdDialog = $mdDialog;
-        this.$window = $window;
+        this.$http = $http;
+        this.authService = authService;
 
         this.init();
     }
 
     init() {
+        this.authService.getAuth();
+
+
         this.loadTree();
     }
 
@@ -37,6 +41,13 @@ export class MainCtrl {
                 ($scope, $mdDialog) => {
                     $scope.cancel = () => {
                         $mdDialog.cancel();
+                    };
+
+                    $scope.enterEmail = () => {
+                        if ($scope.email && $scope.email.indexOf("@thegcci.org") > 1) {
+                            console.log("finding user");
+                            this.findUserByEmail($scope.email);
+                        }
                     };
 
                     $scope.save = () => {
@@ -129,6 +140,9 @@ export class MainCtrl {
         });
     }
 
+    /**
+     * Removes node and all of its descendants.
+     */
     remove(node, evt) {
         this.$mdDialog.show(
             this.$mdDialog.confirm()
@@ -165,8 +179,36 @@ export class MainCtrl {
         });
     }
 
-    move(node, target, pos) {
+    /**
+     * Moves given node and all of its descendants to a new position relative to the target.
+     */
+    move(node) {
+        this.$rootScope.api.getDescendants(node).then((descendants) => {
+            descendants.splice(0, 0, node);
+            this.moveNodes = descendants;
+        });
+    }
 
+    /**
+     * The position of target node to move to.
+     */
+    moveTo(target, pos) {
+        this.$rootScope.api.getDescendants(target).then((descendants) => {
+
+        });
+        if (pos === "child") {
+
+        }
+        else if (pos === "sibling:left" || pos === "sibling:right") {
+
+        }
+    }
+
+    /**
+     * Cancels move operation.
+     */
+    cancelMove() {
+        this.moveNode = null;
     }
 
     /**
@@ -191,6 +233,29 @@ export class MainCtrl {
         });
     }
 
+    /**
+     * Adds a node.
+     */
+    addNode(title, email1, email2, path, callback) {
+        let user = [
+            { "email": email1 },
+            { "email": email2 }
+        ];
+        this.$rootScope.ref.push({
+            "title": title,
+            "uid": user,
+            "path": path,
+            "depth": this.getDepth(path)
+        }, (error) => {
+            if (error) {
+                throw error;
+            }
+            else if (typeof callback === "function") {
+                callback();
+            }
+        });
+    }
+
     getNodeIndex(node) {
         return parseInt(node.path.substr(node.path.length - 4));
     }
@@ -206,6 +271,14 @@ export class MainCtrl {
     indexToPath(index) {
         return (10000 + index).toString().substr(1);
     }
+
+    findUserByEmail(email) {
+        let url = `https://www.googleapis.com/admin/directory/v1/users/${email}`;
+
+        this.$http.get(url).then((data) => {
+            console.log(data);
+        });
+    }
 }
 
-MainCtrl.$inject = ["$rootScope", "utilService", "$mdDialog", "$window"];
+MainCtrl.$inject = ["$rootScope", "utilService", "$mdDialog", "$http", "authService"];
