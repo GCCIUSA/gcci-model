@@ -1,3 +1,28 @@
+export class NodeEditorCtrl {
+    constructor($rootScope, $mdDialog, node) {
+        this.$mdDialog = $mdDialog;
+        this.node = node;
+
+        this.levels = $rootScope.api.getLevels();
+    }
+
+
+    cancel() {
+        this.$mdDialog.cancel();
+    }
+
+    save() {
+        this.$mdDialog.hide({
+            "title": this.node.title,
+            "leader": this.node.leader,
+            "level": this.node.level
+        });
+    }
+}
+
+NodeEditorCtrl.$inject = ["$rootScope", "$mdDialog", "node"];
+
+
 export class MainCtrl {
     constructor($rootScope, utilService, $mdDialog, $http, authService) {
         this.$rootScope = $rootScope;
@@ -32,36 +57,30 @@ export class MainCtrl {
     }
 
     /**
+     * Edits a node
+     */
+    editNode(node, evt) {
+        this.$mdDialog.show({
+            controller: "NodeEditorCtrl as nodeEditor",
+            templateUrl: "assets/md-templates/node-editor.html",
+            parent: angular.element(document.body),
+            targetEvent: evt,
+            locals: { "node": node }
+        }).then((data) => {
+            this.$rootScope.api.getNodeRef(node).update(data);
+        });
+    }
+
+    /**
      * Adds a new node as a rightmost child of the target node.
      */
     addChild(target, evt) {
         this.$mdDialog.show({
-            controller: ["$scope", "$mdDialog", "$rootScope",
-                ($scope, $mdDialog, $rootScope) => {
-                    $scope.levels = $rootScope.api.getLevels();
-
-                    $scope.cancel = () => {
-                        $mdDialog.cancel();
-                    };
-
-                    $scope.enterEmail = () => {
-                        if ($scope.email && $scope.email.indexOf("@thegcci.org") > 1) {
-                            console.log("finding user");
-                            this.findUserByEmail($scope.email);
-                        }
-                    };
-
-                    $scope.save = () => {
-                        $mdDialog.hide({
-                            "title": $scope.title,
-                            "email": $scope.email
-                        });
-                    };
-                }
-            ],
+            controller: "NodeEditorCtrl as nodeEditor",
             templateUrl: 'assets/md-templates/node-editor.html',
             parent: angular.element(document.body),
-            targetEvent: evt
+            targetEvent: evt,
+            locals: { "node": {} }
         }).then((data) => {
             this.$rootScope.api.getChildren(target).then((children) => {
                 // calculate new node's path
@@ -69,18 +88,8 @@ export class MainCtrl {
                 let newNodePath = target.path + this.indexToPath(newNodeIndex);
 
                 // insert new node
-                this.$rootScope.ref.push({
-                    "title": data.title,
-                    "uid": data.email,
-                    "path": newNodePath,
-                    "depth": this.getDepth(newNodePath)
-                }, (error) => {
-                    if (error) {
-                        throw error;
-                    }
-                    else {
-                        this.loadTree();
-                    }
+                this.addNode(data.title, data.leader, data.level, newNodePath, () => {
+                    this.loadTree();
                 });
             });
         });
@@ -92,25 +101,11 @@ export class MainCtrl {
      */
     addSibling(target, pos, evt) {
         this.$mdDialog.show({
-            controller: ["$scope", "$mdDialog", "$rootScope",
-                ($scope, $mdDialog, $rootScope) => {
-                    $scope.levels = $rootScope.api.getLevels();
-
-                    $scope.cancel = () => {
-                        $mdDialog.cancel();
-                    };
-
-                    $scope.save = () => {
-                        $mdDialog.hide({
-                            "title": $scope.title,
-                            "email": $scope.email
-                        });
-                    };
-                }
-            ],
+            controller: "NodeEditorCtrl as nodeEditor",
             templateUrl: 'assets/md-templates/node-editor.html',
             parent: angular.element(document.body),
-            targetEvent: evt
+            targetEvent: evt,
+            locals: { "node": {} }
         }).then((data) => {
             this.$rootScope.api.getSiblings(target).then((siblings) => {
                 let rightSiblings = [],
@@ -125,12 +120,7 @@ export class MainCtrl {
 
                 // insert new node
                 let newNodePath = pos === "left" ? target.path : this.getPathByShiftingIndex(target, 1);
-                this.$rootScope.ref.push({
-                    "title": data.title,
-                    "uid": data.email,
-                    "path": newNodePath,
-                    "depth": this.getDepth(newNodePath)
-                });
+                this.addNode(data.title, data.leader, data.level, newNodePath);
 
                 // includes target node into right siblings if pos === 'left'
                 if (pos === "left") {
@@ -239,14 +229,11 @@ export class MainCtrl {
     /**
      * Adds a node.
      */
-    addNode(title, email1, email2, path, callback) {
-        let user = [
-            { "email": email1 },
-            { "email": email2 }
-        ];
+    addNode(title, leader, level, path, callback) {
         this.$rootScope.ref.push({
             "title": title,
-            "uid": user,
+            "leader": leader,
+            "level": level,
             "path": path,
             "depth": this.getDepth(path)
         }, (error) => {

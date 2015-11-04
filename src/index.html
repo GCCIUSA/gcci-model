@@ -70,6 +70,12 @@
                 </md-button>
                 <md-menu-content width="4">
                     <md-menu-item>
+                        <md-button ng-click="main.editNode(node, $event)">
+                            <md-icon md-font-icon="fa-pencil" class="fa" md-menu-align-target></md-icon>
+                            edit
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-item>
                         <md-button ng-click="main.addSibling(node, 'left', $event)">
                             <md-icon md-font-icon="fa-angle-up" class="fa" md-menu-align-target></md-icon>
                             add sibling above

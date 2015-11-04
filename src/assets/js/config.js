@@ -1,6 +1,6 @@
 import { API } from "../libs/gcci-model/api";
 import { UtilService, AuthService } from "./service";
-import { MainCtrl } from "./controller";
+import { NodeEditorCtrl, MainCtrl } from "./controller";
 
 
 let app = angular.module("app", ["ngMaterial", "firebase"]);
@@ -28,5 +28,6 @@ app
     .service("utilService", UtilService)
     .service("authService", AuthService)
 
+    .controller("NodeEditorCtrl", NodeEditorCtrl)
     .controller("MainCtrl", MainCtrl)
 ;

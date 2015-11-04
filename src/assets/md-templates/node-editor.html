@@ -4,7 +4,7 @@
             <div class="md-toolbar-tools">
                 <h2>Add Node</h2>
                 <span flex></span>
-                <md-button class="md-icon-button" ng-click="cancel()" aria-label="Cancel">
+                <md-button class="md-icon-button" ng-click="nodeEditor.cancel()" aria-label="Cancel">
                     <md-icon md-font-icon="fa-times" class="fa"></md-icon>
                 </md-button>
             </div>
@@ -14,16 +14,16 @@
             <div class="md-dialog-content">
                 <md-input-container>
                     <label>Title</label>
-                    <input type="text" ng-model="title" md-autofocus/>
+                    <input type="text" ng-model="nodeEditor.node.title" md-autofocus/>
                 </md-input-container>
                 <md-input-container>
                     <label>Leader's E-mail</label>
-                    <input type="text" ng-model="email" ng-keydown="enterEmail()"/>
+                    <input type="text" ng-model="nodeEditor.node.leader.email"/>
                 </md-input-container>
                 <md-input-container>
                     <label>Level</label>
-                    <md-select ng-model="level">
-                        <md-option ng-repeat="level in levels" value="{{level}}">{{level}}</md-option>
+                    <md-select ng-model="nodeEditor.node.level">
+                        <md-option ng-repeat="level in nodeEditor.levels" value="{{level}}">{{level}}</md-option>
                     </md-select>
                 </md-input-container>
             </div>
@@ -31,10 +31,10 @@
 
         <div class="md-actions" layout="row">
             <span flex></span>
-            <md-button ng-click="cancel()">
+            <md-button ng-click="nodeEditor.cancel()">
                 Cancel
             </md-button>
-            <md-button class="md-primary" ng-click="save()">
+            <md-button class="md-primary" ng-click="nodeEditor.save()">
                 Save
             </md-button>
         </div>
