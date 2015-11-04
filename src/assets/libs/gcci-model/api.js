@@ -98,7 +98,7 @@ export class API {
             deferred.resolve(null);
         }
         else {
-            this._ref.orderByChild("path").equalTo(this._calcParentPath(node)).once("child_added", (snapshot) => {
+            this._ref.orderByChild("path").equalTo(this._getParentPath(node)).once("child_added", (snapshot) => {
                 deferred.resolve(snapshot.val());
             });
         }
@@ -170,7 +170,7 @@ export class API {
         this._ref.orderByChild("depth").equalTo(node.depth).once("value", (snapshot) => {
             let siblings = [], parsed = this._parse(snapshot.val());
             for (let item of parsed) {
-                if (this._calcParentPath(item) === this._calcParentPath(node)) {
+                if (this._getParentPath(item) === this._getParentPath(node)) {
                     siblings.push(item);
                 }
             }
@@ -195,14 +195,14 @@ export class API {
     }
 
     /**
-     * Calculates parent node's path of given node.
+     * Gets parent node's path of given node.
      *
-     * @method _calcParentPath
+     * @method _getParentPath
      * @param node given node.
      * @returns {*} parent node's path, null if give node is root node.
      * @private
      */
-    _calcParentPath(node) {
+    _getParentPath(node) {
         if (this._isRoot(node)) {
             return null;
         }
