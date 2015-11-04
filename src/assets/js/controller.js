@@ -24,20 +24,38 @@ NodeEditorCtrl.$inject = ["$rootScope", "$mdDialog", "node"];
 
 
 export class MainCtrl {
-    constructor($rootScope, utilService, $mdDialog, $http, authService) {
+    constructor($rootScope, utilService, $mdDialog, $http, authService, userService) {
         this.$rootScope = $rootScope;
         this.utilService = utilService;
         this.$mdDialog = $mdDialog;
         this.$http = $http;
         this.authService = authService;
+        this.userService = userService;
 
         this.init();
     }
 
     init() {
-        this.authService.getAuth();
+        if (this.authService.getAuth()) {
+            this.loadTree();
+            this.userService.getAllUsers().then((data) => {
+                this.domainUsers = data;
+            })
+        }
+    }
 
-        this.loadTree();
+    logout() {
+        this.authService.logout();
+    }
+
+    getLeaderName(node) {
+        if (this.domainUsers && node.leader) {
+            for (let dUser of this.domainUsers) {
+                if (dUser.emails[0].address === node.leader.email) {
+                    return dUser.name.fullName;
+                }
+            }
+        }
     }
 
     loadTree() {
@@ -261,14 +279,6 @@ export class MainCtrl {
     indexToPath(index) {
         return (10000 + index).toString().substr(1);
     }
-
-    findUserByEmail(email) {
-        let url = `https://www.googleapis.com/admin/directory/v1/users/${email}`;
-
-        this.$http.get(url).then((data) => {
-            console.log(data);
-        });
-    }
 }
 
-MainCtrl.$inject = ["$rootScope", "utilService", "$mdDialog", "$http", "authService"];
+MainCtrl.$inject = ["$rootScope", "utilService", "$mdDialog", "$http", "authService", "userService"];

@@ -1,5 +1,5 @@
 import { API } from "../libs/gcci-model/api";
-import { UtilService, AuthService } from "./service";
+import { UtilService, AuthService, UserService } from "./service";
 import { NodeEditorCtrl, MainCtrl } from "./controller";
 
 
@@ -27,6 +27,7 @@ app.run(["$rootScope",
 app
     .service("utilService", UtilService)
     .service("authService", AuthService)
+    .service("userService", UserService)
 
     .controller("NodeEditorCtrl", NodeEditorCtrl)
     .controller("MainCtrl", MainCtrl)

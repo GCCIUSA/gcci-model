@@ -40,7 +40,7 @@
     <div>
         <md-menu>
             <md-button class="md-mini" ng-click="main.openMenu($mdOpenMenu, $event)">
-                Test User <i class="fa fa-caret-down btn-icon btn-icon-right"></i>
+                {{user ? user.google.displayName : "Log In"}} <i class="fa fa-caret-down btn-icon btn-icon-right"></i>
             </md-button>
             <md-menu-content width="3">
                 <md-menu-item>
@@ -51,7 +51,7 @@
                 </md-menu-item>
                 <md-menu-divider></md-menu-divider>
                 <md-menu-item>
-                    <md-button>
+                    <md-button ng-click="main.logout()">
                         <md-icon md-font-icon="fa-sign-out" class="fa" md-menu-align-target></md-icon>
                         Log Out
                     </md-button>
@@ -102,7 +102,7 @@
                     </md-menu-item>
                 </md-menu-content>
             </md-menu>
-            <span>{{node.title}} ({{node.path}}) ({{node.depth}})</span>
+            <span>{{node.title}} {{main.getLeaderName(node)}} ({{node.path}}) ({{node.depth}})</span>
         </div>
     </div>
     <div>
