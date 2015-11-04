@@ -17,8 +17,14 @@
                     <input type="text" ng-model="title" md-autofocus/>
                 </md-input-container>
                 <md-input-container>
-                    <label>User's E-mail</label>
+                    <label>Leader's E-mail</label>
                     <input type="text" ng-model="email" ng-keydown="enterEmail()"/>
+                </md-input-container>
+                <md-input-container>
+                    <label>Level</label>
+                    <md-select ng-model="level">
+                        <md-option ng-repeat="level in levels" value="{{level}}">{{level}}</md-option>
+                    </md-select>
                 </md-input-container>
             </div>
         </md-dialog-content>

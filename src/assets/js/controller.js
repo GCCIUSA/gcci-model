@@ -12,7 +12,6 @@ export class MainCtrl {
     init() {
         this.authService.getAuth();
 
-
         this.loadTree();
     }
 
@@ -37,8 +36,10 @@ export class MainCtrl {
      */
     addChild(target, evt) {
         this.$mdDialog.show({
-            controller: ["$scope", "$mdDialog",
-                ($scope, $mdDialog) => {
+            controller: ["$scope", "$mdDialog", "$rootScope",
+                ($scope, $mdDialog, $rootScope) => {
+                    $scope.levels = $rootScope.api.getLevels();
+
                     $scope.cancel = () => {
                         $mdDialog.cancel();
                     };
@@ -91,8 +92,10 @@ export class MainCtrl {
      */
     addSibling(target, pos, evt) {
         this.$mdDialog.show({
-            controller: ["$scope", "$mdDialog",
-                ($scope, $mdDialog) => {
+            controller: ["$scope", "$mdDialog", "$rootScope",
+                ($scope, $mdDialog, $rootScope) => {
+                    $scope.levels = $rootScope.api.getLevels();
+
                     $scope.cancel = () => {
                         $mdDialog.cancel();
                     };
