@@ -5,7 +5,19 @@
  */
 export class API {
     constructor(ref) {
-        this.ref = ref;
+        this._ref = ref;
+
+        this._LEVELS = ["牧區", "區", "實習區", "小組", "福音站"];
+    }
+
+    /**
+     * Retrieves all levels.
+     *
+     * @method getLevels
+     * @returns {Array} all levels.
+     */
+    getLevels() {
+        return this._LEVELS;
     }
 
     /**
@@ -18,7 +30,7 @@ export class API {
     getNodeById(id) {
         let deferred = $.Deferred();
 
-        this.ref.orderByKey().equalTo(id).once("child_added", (snapshot) => {
+        this._ref.orderByKey().equalTo(id).once("child_added", (snapshot) => {
             deferred.resolve(snapshot.val());
         });
 
@@ -35,7 +47,7 @@ export class API {
     getNodeByPath(path) {
         let deferred = $.Deferred();
 
-        this.ref.orderByChild("path").equalTo(path).once("child_added", (snapshot) => {
+        this._ref.orderByChild("path").equalTo(path).once("child_added", (snapshot) => {
             deferred.resolve(snapshot.val());
         });
 
@@ -50,7 +62,7 @@ export class API {
      * @returns {Object} firebase reference.
      */
     getNodeRef(node) {
-        return this.ref.child(node.id);
+        return this._ref.child(node.id);
     }
 
     /**
@@ -62,7 +74,7 @@ export class API {
     getTree() {
         let deferred = $.Deferred();
 
-        this.ref.orderByChild("path").once("value", (snapshot) => {
+        this._ref.orderByChild("path").once("value", (snapshot) => {
             let parsed = this._parse(snapshot.val());
             this._sort(parsed);
 
@@ -86,7 +98,7 @@ export class API {
             deferred.resolve(null);
         }
         else {
-            this.ref.orderByChild("path").equalTo(this._calcParentPath(node)).once("child_added", (snapshot) => {
+            this._ref.orderByChild("path").equalTo(this._calcParentPath(node)).once("child_added", (snapshot) => {
                 deferred.resolve(snapshot.val());
             });
         }
@@ -105,7 +117,7 @@ export class API {
     getChildren(node) {
         let deferred = $.Deferred();
 
-        this.ref.orderByChild("depth").equalTo(node.depth + 1).once("value", (snapshot) => {
+        this._ref.orderByChild("depth").equalTo(node.depth + 1).once("value", (snapshot) => {
             let children = [], parsed = this._parse(snapshot.val());
             for (let item of parsed) {
                 if (item.path.substr(0, node.path.length) === node.path) {
@@ -130,7 +142,7 @@ export class API {
     getDescendants(node) {
         let deferred = $.Deferred();
 
-        this.ref.orderByChild("depth").startAt(node.depth + 1).once("value", (snapshot) => {
+        this._ref.orderByChild("depth").startAt(node.depth + 1).once("value", (snapshot) => {
             let descendants = [], parsed = this._parse(snapshot.val());
             for (let item of parsed) {
                 if (item.path.substr(0, node.path.length) === node.path) {
@@ -155,7 +167,7 @@ export class API {
     getSiblings(node) {
         let deferred = $.Deferred();
 
-        this.ref.orderByChild("depth").equalTo(node.depth).once("value", (snapshot) => {
+        this._ref.orderByChild("depth").equalTo(node.depth).once("value", (snapshot) => {
             let siblings = [], parsed = this._parse(snapshot.val());
             for (let item of parsed) {
                 if (this._calcParentPath(item) === this._calcParentPath(node)) {
