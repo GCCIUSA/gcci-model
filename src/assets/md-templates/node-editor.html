@@ -29,7 +29,6 @@
                 <md-chips ng-model="nodeEditor.node.leaders" md-autocomplete-snap md-require-match="true">
                     <md-autocomplete md-input-minlength="2"
                                      md-search-text="nodeEditor.leaderSearchText"
-                                     md-selected-item="nodeEditor.node.leader"
                                      md-items="item in nodeEditor.filterQuery(nodeEditor.leaderSearchText)"
                                      md-item-text="item.name.fullName"
                                      placeholder="find..."
