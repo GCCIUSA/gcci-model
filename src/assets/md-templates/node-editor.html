@@ -16,10 +16,19 @@
                     <label>Title</label>
                     <input type="text" ng-model="nodeEditor.node.title" md-autofocus/>
                 </md-input-container>
-                <md-input-container>
-                    <label>Leader's E-mail</label>
-                    <input type="text" ng-model="nodeEditor.node.leader.email"/>
-                </md-input-container>
+                <md-autocomplete flex required
+                    md-input-name="autocompleteField"
+                    md-input-minlength="2"
+                    md-search-text="nodeEditor.leaderSearchText"
+                    md-selected-item="nodeEditor.node.leader"
+                    md-items="item in nodeEditor.domainUsers"
+                    md-item-text="item.name.fullName"
+                    placeholder="Select a leader"
+                    md-floating-label="Leader">
+                    <md-item-template md-highlight-text="nodeEditor.leaderSearchText">
+                        {{item.name.fullName}}
+                    </md-item-template>
+                </md-autocomplete>
                 <md-input-container>
                     <label>Level</label>
                     <md-select ng-model="nodeEditor.node.level">

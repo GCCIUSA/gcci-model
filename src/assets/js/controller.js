@@ -1,7 +1,9 @@
 export class NodeEditorCtrl {
-    constructor($rootScope, $mdDialog, node) {
+    constructor($rootScope, $mdDialog, node, domainUsers) {
         this.$mdDialog = $mdDialog;
         this.node = node;
+        this.domainUsers = domainUsers;
+        console.log(domainUsers);
 
         this.levels = $rootScope.api.getLevels();
     }
@@ -20,7 +22,7 @@ export class NodeEditorCtrl {
     }
 }
 
-NodeEditorCtrl.$inject = ["$rootScope", "$mdDialog", "node"];
+NodeEditorCtrl.$inject = ["$rootScope", "$mdDialog", "node", "domainUsers"];
 
 
 export class MainCtrl {
@@ -83,7 +85,7 @@ export class MainCtrl {
             templateUrl: "assets/md-templates/node-editor.html",
             parent: angular.element(document.body),
             targetEvent: evt,
-            locals: { "node": node }
+            locals: { "node": node, "domainUsers": this.domainUsers }
         }).then((data) => {
             this.$rootScope.api.getNodeRef(node).update(data);
         });
@@ -98,7 +100,7 @@ export class MainCtrl {
             templateUrl: 'assets/md-templates/node-editor.html',
             parent: angular.element(document.body),
             targetEvent: evt,
-            locals: { "node": {} }
+            locals: { "node": {}, "domainUsers": this.domainUsers }
         }).then((data) => {
             this.$rootScope.api.getChildren(target).then((children) => {
                 // calculate new node's path
@@ -123,7 +125,7 @@ export class MainCtrl {
             templateUrl: 'assets/md-templates/node-editor.html',
             parent: angular.element(document.body),
             targetEvent: evt,
-            locals: { "node": {} }
+            locals: { "node": {}, "domainUsers": this.domainUsers }
         }).then((data) => {
             this.$rootScope.api.getSiblings(target).then((siblings) => {
                 let rightSiblings = [],
