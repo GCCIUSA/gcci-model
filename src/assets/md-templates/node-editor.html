@@ -10,31 +10,36 @@
             </div>
         </md-toolbar>
 
-        <md-dialog-content style="min-width: 400px;">
-            <div class="md-dialog-content">
-                <md-input-container>
-                    <label>Title</label>
-                    <input type="text" ng-model="nodeEditor.node.title" md-autofocus/>
-                </md-input-container>
-                <md-autocomplete flex required
-                    md-input-name="autocompleteField"
-                    md-input-minlength="2"
-                    md-search-text="nodeEditor.leaderSearchText"
-                    md-selected-item="nodeEditor.node.leader"
-                    md-items="item in nodeEditor.domainUsers"
-                    md-item-text="item.name.fullName"
-                    placeholder="Select a leader"
-                    md-floating-label="Leader">
-                    <md-item-template md-highlight-text="nodeEditor.leaderSearchText">
-                        {{item.name.fullName}}
-                    </md-item-template>
-                </md-autocomplete>
-                <md-input-container>
-                    <label>Level</label>
-                    <md-select ng-model="nodeEditor.node.level">
-                        <md-option ng-repeat="level in nodeEditor.levels" value="{{level}}">{{level}}</md-option>
-                    </md-select>
-                </md-input-container>
+        <md-dialog-content class="node-editor">
+            <div class="md-dialog-content" layout="column">
+                <h4>General Info</h4>
+                <div layout>
+                    <md-input-container flex>
+                        <label>Title</label>
+                        <input type="text" ng-model="nodeEditor.node.title" md-autofocus/>
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label>Level</label>
+                        <md-select ng-model="nodeEditor.node.level">
+                            <md-option ng-repeat="level in nodeEditor.levels" value="{{level}}">{{level}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+                <h4>Leaders</h4>
+                <md-chips ng-model="nodeEditor.node.leaders" md-autocomplete-snap md-require-match="true">
+                    <md-autocomplete md-input-minlength="2"
+                                     md-search-text="nodeEditor.leaderSearchText"
+                                     md-selected-item="nodeEditor.node.leader"
+                                     md-items="item in nodeEditor.filterQuery(nodeEditor.leaderSearchText)"
+                                     md-item-text="item.name.fullName"
+                                     placeholder="find..."
+                                     md-autoselect>
+                        <span md-highlight-text="nodeEditor.leaderSearchText">{{item.name.fullName}}</span>
+                    </md-autocomplete>
+                    <md-chip-template>
+                        <span>{{$chip.name.fullName}}</span>
+                    </md-chip-template>
+                </md-chips>
             </div>
         </md-dialog-content>
 

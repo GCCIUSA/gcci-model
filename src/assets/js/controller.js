@@ -3,11 +3,22 @@ export class NodeEditorCtrl {
         this.$mdDialog = $mdDialog;
         this.node = node;
         this.domainUsers = domainUsers;
-        console.log(domainUsers);
 
         this.levels = $rootScope.api.getLevels();
+        this.node.leaders = [];
     }
 
+    filterQuery(searchText) {
+        let lcSearchText = searchText.toLowerCase(),
+            filteredUsers = [];
+        for (let dUser of this.domainUsers) {
+            if (dUser.name.fullName.toLowerCase().indexOf(lcSearchText) >= 0) {
+                filteredUsers.push(dUser);
+            }
+        }
+
+        return filteredUsers;
+    }
 
     cancel() {
         this.$mdDialog.cancel();
