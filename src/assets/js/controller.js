@@ -10,16 +10,17 @@ export class NodeEditorCtrl {
 
     init() {
         this.levels = this.$rootScope.api.getLevels();
+        this.leaders = [];
+
         if (this.node.leaders) {
-            for (let leader of this.node.leaders) {
-                let uidSplit = leader.uid.split(":");
-                if (uidSplit[0] === "google" && this.domainUsers.findIndex(x => x.id === uidSplit[1]) >= 0) {
-                    
+            for (let leader of this.node.leaders.split(";")) {
+                let uidSplit = leader.split(":"),
+                    dUser = this.domainUsers.find(x => x.id === uidSplit[1]);
+
+                if (uidSplit[0] === "google" && dUser) {
+                    this.leaders.push(dUser);
                 }
             }
-        }
-        else {
-            this.node.leaders = [];
         }
     }
 
@@ -42,7 +43,7 @@ export class NodeEditorCtrl {
     save() {
         this.$mdDialog.hide({
             "title": this.node.title,
-            "leaders": this.node.leaders,
+            "leaders": this.leaders.map(obj => `google:${obj.id}`).join(";"),
             "level": this.node.level
         });
     }
@@ -94,10 +95,6 @@ export class MainCtrl {
         });
     }
 
-    openMenu($mdOpenMenu, evt) {
-        $mdOpenMenu(evt);
-    }
-
     calcIndentation(depth) {
         return (depth - 2) * 40;
     }
@@ -111,11 +108,9 @@ export class MainCtrl {
             templateUrl: "assets/md-templates/node-editor.html",
             parent: angular.element(document.body),
             targetEvent: evt,
-            closeTo: angular.element(document.body),
             locals: { "node": node, "domainUsers": this.domainUsers }
         }).then((data) => {
-            //this.$rootScope.api.getNodeRef(node).update(data);
-            console.log(data);
+            this.$rootScope.api.getNodeRef(node).update(data);
         }, () => { console.log("cancelled"); });
     }
 
@@ -128,7 +123,6 @@ export class MainCtrl {
             templateUrl: 'assets/md-templates/node-editor.html',
             parent: angular.element(document.body),
             targetEvent: evt,
-            closeTo: angular.element(document.body),
             locals: { "node": {}, "domainUsers": this.domainUsers }
         }).then((data) => {
             this.$rootScope.api.getChildren(target).then((children) => {
@@ -154,7 +148,6 @@ export class MainCtrl {
             templateUrl: 'assets/md-templates/node-editor.html',
             parent: angular.element(document.body),
             targetEvent: evt,
-            closeTo: angular.element(document.body),
             locals: { "node": {}, "domainUsers": this.domainUsers }
         }).then((data) => {
             this.$rootScope.api.getSiblings(target).then((siblings) => {
@@ -192,7 +185,6 @@ export class MainCtrl {
                 .title("Confirm")
                 .content("Deleting this node will result in deleting all of its descendants. Are you sure to continue?")
                 .targetEvent(evt)
-                .closeTo(angular.element(document.body))
                 .ok("Confirm")
                 .cancel("Cancel")
         ).then(() => {

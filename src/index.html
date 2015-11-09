@@ -65,7 +65,7 @@
     <div layout="column" layout-align="start start" class="model-tree">
         <div ng-repeat="node in main.tree" style="margin-left: {{main.calcIndentation(node.depth)}}px;" ng-if="node.depth > 1">
             <md-menu>
-                <md-button class="md-icon-button" ng-click="main.openMenu($mdOpenMenu, $event)" aria-label="Menu">
+                <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)" aria-label="Menu">
                     <md-icon md-font-icon="fa-ellipsis-v" class="fa"></md-icon>
                 </md-button>
                 <md-menu-content width="4">
