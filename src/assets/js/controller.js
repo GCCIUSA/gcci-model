@@ -95,8 +95,8 @@ export class MainCtrl {
         });
     }
 
-    calcIndentation(depth) {
-        return (depth - 2) * 40;
+    getIndentation(depth) {
+        return { 'margin-left': `${(depth - 2) * 40}px` };
     }
 
     /**
