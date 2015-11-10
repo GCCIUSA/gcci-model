@@ -17,24 +17,52 @@ UtilService.$inject = ["$mdToast"];
 
 
 export class AuthService {
-    constructor($rootScope, $firebaseAuth) {
+    constructor($rootScope, $firebaseAuth, $http, $q) {
         this.$rootScope = $rootScope;
+        this.$http = $http;
+        this.$q = $q;
 
         this.fbAuth = $firebaseAuth($rootScope.ref);
     }
 
     getAuth() {
+        /**
+         * need to check both firebase token and google token.
+         * firebase token is for firebase services, google token is for google api service.
+         *
+         * firebase token is set to expired in 24 hours, google access token is set to expired in 1 hour,
+         * will need to use google refresh token to refresh google access token.
+         *
+         * unfortunately, as of now, there's no way for firebase to obtain a google refresh token, will have to
+         * re-authenticate user when google access token has expired.
+         */
+
+        let deferred = this.$q.defer();
+
+        // check if firebase token is valid
         let authData = this.fbAuth.$getAuth();
-        if (authData) {
-            this.$rootScope.user = authData;
-
-            return true;
+        if (authData) { // firebase token is valid
+            // check if google token is valid
+            let url = `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${authData.google.accessToken}`;
+            this.$http.get(url).then(
+                () => { // google token is valid
+                    this.$rootScope.user = authData;
+                    deferred.resolve(true);
+                },
+                (error) => { // google token is invalid
+                    if (error.data.error === "invalid_token") {
+                        this.login();
+                    }
+                    deferred.reject(error);
+                }
+            );
         }
-        else {
+        else { // firebase token is invalid
             this.login();
-
-            return false;
+            deferred.reject();
         }
+
+        return deferred.promise;
     }
 
     login() {
@@ -45,17 +73,21 @@ export class AuthService {
             ].join(" ")
         };
 
-        this.fbAuth.$authWithOAuthPopup("google", options).then().catch(() => {
+        this.fbAuth.$authWithOAuthPopup("google", options).then(() => {
+            window.location.reload();
+        }).catch(() => {
             alert("User Login Failed");
         });
     }
 
     logout() {
-        return this.fbAuth.$unauth();
+        delete this.$rootScope.user;
+        this.fbAuth.$unauth();
+        window.location.reload();
     }
 }
 
-AuthService.$inject = ["$rootScope", "$firebaseAuth"];
+AuthService.$inject = ["$rootScope", "$firebaseAuth", "$http", "$q"];
 
 
 

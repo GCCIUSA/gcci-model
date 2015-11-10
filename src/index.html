@@ -39,7 +39,7 @@
     </div>
     <div>
         <md-menu>
-            <md-button class="md-mini" ng-click="main.openMenu($mdOpenMenu, $event)">
+            <md-button class="md-mini" ng-click="$mdOpenMenu($event)">
                 {{user ? user.google.displayName : "Log In"}} <i class="fa fa-caret-down btn-icon btn-icon-right"></i>
             </md-button>
             <md-menu-content width="3">

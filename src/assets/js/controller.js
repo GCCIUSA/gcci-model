@@ -65,12 +65,12 @@ export class MainCtrl {
     }
 
     init() {
-        if (this.authService.getAuth()) {
+        this.authService.getAuth().then(() => {
             this.loadTree();
             this.userService.getAllUsers().then((data) => {
                 this.domainUsers = data;
-            })
-        }
+            });
+        });
     }
 
     logout() {
