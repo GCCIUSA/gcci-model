@@ -55,7 +55,7 @@ NodeEditorCtrl.$inject = ["$rootScope", "$mdDialog", "node", "domainUsers"];
 
 
 export class MainCtrl {
-    constructor($rootScope, utilService, $mdDialog, $http, authService, userService, $firebaseArray) {
+    constructor($rootScope, utilService, $mdDialog, $http, authService, userService, $firebaseArray, $q) {
         this.$rootScope = $rootScope;
         this.utilService = utilService;
         this.$mdDialog = $mdDialog;
@@ -63,6 +63,7 @@ export class MainCtrl {
         this.authService = authService;
         this.userService = userService;
         this.$firebaseArray = $firebaseArray;
+        this.$q = $q;
 
         this.init();
     }
@@ -226,6 +227,59 @@ export class MainCtrl {
      * The position of target node to move to.
      */
     moveTo(target, pos) {
+        // updated moving nodes and related nodes of target
+        let updateNewPos = () => {
+            if (pos === "child") {
+                this.$rootScope.api.getChildren(target).then((children) => {
+                    // calculate new path of moving nodes
+                    let newIndex = children.length > 0 ? this.getNodeIndex(children[children.length - 1]) + 1 : 1,
+                        newPath = target.path + this.indexToPath(newIndex),
+                        oNodePath = this.moveNodes[0].path;
+
+                    // update moving nodes
+                    for (let n of this.moveNodes) {
+                        let nNewPath = newPath + n.path.substr(oNodePath.length);
+                        this.$rootScope.api.getNodeRef(n).update({
+                            "path": nNewPath,
+                            "depth": this.getDepth(nNewPath)
+                        });
+                    }
+                });
+            }
+            else if (pos === "left" || pos === "right") {
+                this.$rootScope.api.getSiblings(target).then((siblings) => {
+                    let rightSiblings = [],
+                        targetIndex = this.getNodeIndex(target),
+                        newPath = pos === "left" ? target.path : this.getPathByShiftingIndex(target, 1),
+                        oNodePath = this.moveNodes[0].path;
+
+                    // get right siblings of the target.
+                    for (let n of siblings) {
+                        if (this.getNodeIndex(n) > targetIndex + (pos === "left" ?  -1 : 0)) {
+                            rightSiblings.push(n);
+                        }
+                    }
+
+                    // update related nodes of target
+                    let cnt = 0;
+                    for (let n of rightSiblings) {
+                        this.updatePath(n, this.getPathByShiftingIndex(n, 1)).then(() => {
+                            if (++cnt === rightSiblings.length) {
+                                // update moving nodes
+                                for (let mn of this.moveNodes) {
+                                    let nNewPath = newPath + mn.path.substr(oNodePath.length);
+                                    this.$rootScope.api.getNodeRef(mn).update({
+                                        "path": nNewPath,
+                                        "depth": this.getDepth(nNewPath)
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        };
+
         // update right siblings of original node
         this.$rootScope.api.getSiblings(this.moveNodes[0]).then((siblings) => {
             let rightSiblings = [],
@@ -239,61 +293,20 @@ export class MainCtrl {
             }
 
             // update path of right siblings
-            for (let n of rightSiblings) {
-                this.updatePath(n, this.getPathByShiftingIndex(n, -1));
+            let cnt = 0;
+            if (rightSiblings.length > 0) {
+                for (let n of rightSiblings) {
+                    this.updatePath(n, this.getPathByShiftingIndex(n, -1)).then(() => {
+                        if (++cnt === rightSiblings.length) {
+                            updateNewPos();
+                        }
+                    });
+                }
+            }
+            else {
+                updateNewPos();
             }
         });
-
-        // updated moving nodes and related nodes of target
-        if (pos === "child") {
-            this.$rootScope.api.getChildren(target).then((children) => {
-                // calculate new path of moving nodes
-                let newIndex = children.length > 0 ? this.getNodeIndex(children[children.length - 1]) + 1 : 1,
-                    newPath = target.path + this.indexToPath(newIndex),
-                    oNodePath = this.moveNodes[0].path;
-
-                // update moving nodes
-                for (let n of this.moveNodes) {
-                    let nNewPath = newPath + n.path.substr(oNodePath.length);
-                    this.$rootScope.api.getNodeRef(n).update({
-                        "path": nNewPath,
-                        "depth": this.getDepth(nNewPath)
-                    });
-                }
-            });
-        }
-        else if (pos === "left" || pos === "right") {
-            this.$rootScope.api.getSiblings(target).then((siblings) => {
-                let rightSiblings = [],
-                    targetIndex = this.getNodeIndex(target),
-                    newPath = pos === "left" ? target.path : this.getPathByShiftingIndex(target, 1),
-                    oNodePath = this.moveNodes[0].path;
-
-                // get right siblings of the target.
-                for (let n of siblings) {
-                    if (n.$id === this.moveNodes[0].$id) {
-                        break;
-                    }
-                    if (this.getNodeIndex(n) > targetIndex + (pos === "left" ?  -1 : 0)) {
-                        rightSiblings.push(n);
-                    }
-                }
-
-                // update moving nodes
-                for (let n of this.moveNodes) {
-                    let nNewPath = newPath + n.path.substr(oNodePath.length);
-                    this.$rootScope.api.getNodeRef(n).update({
-                        "path": nNewPath,
-                        "depth": this.getDepth(nNewPath)
-                    });
-                }
-
-                // update related nodes of target
-                for (let n of rightSiblings) {
-                    this.updatePath(n, this.getPathByShiftingIndex(n, 1));
-                }
-            });
-        }
 
         this.cancelMove();
     }
@@ -309,22 +322,42 @@ export class MainCtrl {
      * Updates path of node and all of its descendants.
      */
     updatePath(node, newPath) {
+        let deferred = this.$q.defer();
+
         // update descendants
         this.$rootScope.api.getDescendants(node).then((descendants) => {
+            let cnt = 0;
+
+            let updateHandler = (error) => {
+                if (error) {
+                    deferred.reject(error);
+                    throw error;
+                }
+                else {
+                    if (++cnt === descendants.length + 1) {
+                        deferred.resolve(true);
+                    }
+                    console.log(cnt);
+                }
+            };
+
+            // update node
+            this.$rootScope.api.getNodeRef(node).update({
+                "path": newPath,
+                "depth": this.getDepth(newPath)
+            }, updateHandler);
+
+            // update descendants
             for (let n of descendants) {
                 let dNewPath = newPath + n.path.substr(node.path.length);
                 this.$rootScope.api.getNodeRef(n).update({
                     "path": dNewPath,
                     "depth": this.getDepth(dNewPath)
-                });
+                }, updateHandler);
             }
         });
 
-        // update node
-        this.$rootScope.api.getNodeRef(node).update({
-            "path": newPath,
-            "depth": this.getDepth(newPath)
-        });
+        return deferred.promise;
     }
 
     /**
@@ -364,4 +397,4 @@ export class MainCtrl {
     }
 }
 
-MainCtrl.$inject = ["$rootScope", "utilService", "$mdDialog", "$http", "authService", "userService", "$firebaseArray"];
+MainCtrl.$inject = ["$rootScope", "utilService", "$mdDialog", "$http", "authService", "userService", "$firebaseArray", "$q"];
