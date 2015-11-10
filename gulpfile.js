@@ -24,9 +24,7 @@ var jsSrc = function (isRelease) {
         assetPath + "/libs/angular-material/angular-material.min.js"
     ]);
 
-    var custom = browserify([
-        assetPath + "/js/config.js"
-    ])
+    var custom = browserify([require.resolve("babel-polyfill"), assetPath + "/js/config.js"])
         .transform(babelify)
         .bundle()
         .pipe(source("custom.js"))

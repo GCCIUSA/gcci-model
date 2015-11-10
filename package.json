@@ -8,6 +8,7 @@
   "author": "gcci",
   "license": "ISC",
   "devDependencies": {
+    "babel-polyfill": "^6.0.16",
     "babelify": "^6.3.0",
     "browserify": "^11.2.0",
     "gulp": "^3.9.0",
