@@ -162,13 +162,18 @@ export class API {
      *
      * @method getSiblings
      * @param node node object.
+     * @param side 'left' or 'right' side of siblings, not including itself.
+     * @param inclSelf whether to include node itself when side param is defined.
      * @returns {Promise} array of siblings
      */
-    getSiblings(node) {
+    getSiblings(node, side, inclSelf) {
         let deferred = $.Deferred();
 
         this._ref.orderByChild("depth").equalTo(node.depth).once("value", (snapshot) => {
-            let siblings = [], parsed = this._parse(snapshot.val());
+            let siblings = [],
+                parsed = this._parse(snapshot.val()),
+                nodeIndex = this._getNodeIndex(node);
+
             for (let item of parsed) {
                 if (this._getParentPath(item) === this._getParentPath(node)) {
                     siblings.push(item);
@@ -176,10 +181,31 @@ export class API {
             }
             this._sort(siblings);
 
-            deferred.resolve(siblings);
+            if (side === "left") {
+                if (inclSelf) { nodeIndex++; }
+                deferred.resolve(siblings.filter(sibling => this._getNodeIndex(sibling) < nodeIndex));
+            }
+            else if (side === "right") {
+                if (inclSelf) { nodeIndex--; }
+                deferred.resolve(siblings.filter(sibling => this._getNodeIndex(sibling) > nodeIndex));
+            }
+            else {
+                deferred.resolve(siblings);
+            }
         });
 
         return deferred.promise();
+    }
+
+    /**
+     * Gets index position of given node within its siblings.
+     *
+     * @param node given node.
+     * @returns {Number} index position.
+     * @private
+     */
+    _getNodeIndex(node) {
+        return parseInt(node.path.substr(node.path.length - 4));
     }
 
     /**
@@ -207,6 +233,18 @@ export class API {
             return null;
         }
         return node.path.substr(0, node.path.length - 4);
+    }
+
+    /**
+     * Determines if given nodes are siblings.
+     *
+     * @method _isSiblingOf
+     * @param node1 first node.
+     * @param node2 second node.
+     * @private
+     */
+    _isSiblingOf(node1, node2) {
+        return this._getParentPath(node1) === this._getParentPath(node2);
     }
 
     /**

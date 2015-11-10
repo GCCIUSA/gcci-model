@@ -223,6 +223,33 @@ export class MainCtrl {
         return this.moveNodes.findIndex(x => x.$id === node.$id) < 0;
     }
 
+    moveTo1(target, pos) {
+        let dupTarget = angular.copy(target);
+
+        if (pos === "child") {
+
+        }
+        else if (pos === "left" || pos === "right") {
+            // target and source are siblings
+            if (this.$rootScope.api._isSiblingOf(this.moveNodes[0], target)) {
+                if (this.getNodeIndex(target) < this.getNodeIndex(this.moveNodes[0])) { // target is left sibling
+                    // update target's right siblings until source node
+                    // update source node
+                }
+                else { // target is right sibling
+                    // update source node's right siblings until target node
+                    // update source node
+                }
+            }
+
+            // target and source are not siblings
+
+            // update source node's right siblings
+            // update target node's right siblings
+            // update source node
+        }
+    }
+
     /**
      * The position of target node to move to.
      */
