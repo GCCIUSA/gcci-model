@@ -176,7 +176,7 @@ export class MainCtrl {
         this.$mdDialog.show(
             this.$mdDialog.confirm()
                 .title("Confirm")
-                .content("Deleting this node will result in deleting all of its descendants. Are you sure to continue?")
+                .content(`Are you sure to delete ${node.title} and all of its descendants?`)
                 .targetEvent(evt)
                 .ok("Confirm")
                 .cancel("Cancel")
@@ -265,22 +265,18 @@ export class MainCtrl {
         else if (pos === "left" || pos === "right") {
             this.$rootScope.api.getSiblings(target).then((siblings) => {
                 let rightSiblings = [],
-                    targetIndex = this.getNodeIndex(target);
+                    targetIndex = this.getNodeIndex(target),
+                    newPath = pos === "left" ? target.path : this.getPathByShiftingIndex(target, 1),
+                    oNodePath = this.moveNodes[0].path;
 
                 // get right siblings of the target.
                 for (let n of siblings) {
+                    if (n.$id === this.moveNodes[0].$id) {
+                        break;
+                    }
                     if (this.getNodeIndex(n) > targetIndex + (pos === "left" ?  -1 : 0)) {
                         rightSiblings.push(n);
                     }
-                }
-
-                // calculate new path of moving nodes
-                let newPath = pos === "left" ? target.path : this.getPathByShiftingIndex(target, 1),
-                    oNodePath = this.moveNodes[0].path;
-
-                // update related nodes of target
-                for (let n of rightSiblings) {
-                    this.updatePath(n, this.getPathByShiftingIndex(n, 1));
                 }
 
                 // update moving nodes
@@ -290,6 +286,11 @@ export class MainCtrl {
                         "path": nNewPath,
                         "depth": this.getDepth(nNewPath)
                     });
+                }
+
+                // update related nodes of target
+                for (let n of rightSiblings) {
+                    this.updatePath(n, this.getPathByShiftingIndex(n, 1));
                 }
             });
         }
