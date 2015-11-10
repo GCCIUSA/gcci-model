@@ -64,10 +64,11 @@
 <div layout layout-align="space-around start">
     <div layout="column" layout-align="start start" class="model-tree">
         <div ng-repeat="node in main.tree" ng-style="main.getIndentation(node.depth)" ng-if="node.depth > 1">
-            <md-menu>
+            <md-menu ng-if="!main.moveNodes">
                 <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)" aria-label="Menu">
                     <md-icon md-font-icon="fa-ellipsis-v" class="fa"></md-icon>
                 </md-button>
+
                 <md-menu-content width="4">
                     <md-menu-item>
                         <md-button ng-click="main.editNode(node, $event)">
@@ -93,11 +94,44 @@
                             add child
                         </md-button>
                     </md-menu-item>
+                    <md-menu-item>
+                        <md-button ng-click="main.move(node, $event)" aria-label="add child">
+                            <md-icon md-font-icon="fa-arrows" class="fa" md-menu-align-target></md-icon>
+                            move
+                        </md-button>
+                    </md-menu-item>
                     <md-menu-divider></md-menu-divider>
                     <md-menu-item>
                         <md-button ng-click="main.remove(node, $event)" aria-label="remove node">
                             <md-icon md-font-icon="fa-trash-o" class="fa" md-menu-align-target></md-icon>
                             remove
+                        </md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
+
+            <md-menu ng-if="main.moveNodes">
+                <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)" aria-label="Move Menu">
+                    <md-icon md-font-icon="fa-ellipsis-v" class="fa"></md-icon>
+                </md-button>
+
+                <md-menu-content width="4">
+                    <md-menu-item>
+                        <md-button ng-click="main.moveTo(node, 'left')" aria-label="as sibling above">
+                            <md-icon md-font-icon="fa-angle-up" class="fa" md-menu-align-target></md-icon>
+                            as sibling above
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-item>
+                        <md-button ng-click="main.moveTo(node, 'right')" aria-label="as sibling below">
+                            <md-icon md-font-icon="fa-angle-down" class="fa" md-menu-align-target></md-icon>
+                            as sibling below
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-item>
+                        <md-button ng-click="main.moveTo(node, 'child')" aria-label="as child">
+                            <md-icon md-font-icon="fa-long-arrow-right rotate45" class="fa" md-menu-align-target></md-icon>
+                            as child
                         </md-button>
                     </md-menu-item>
                 </md-menu-content>
@@ -111,7 +145,6 @@
         </md-button>
     </div>
 </div>
-
 
 <script src="assets/gen/js/app.js"></script>
 </body>

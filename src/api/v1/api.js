@@ -62,7 +62,7 @@ export class API {
     getTree() {
         let deferred = $.Deferred();
 
-        this.ref.orderByChild("path").once("value", (snapshot) => {
+        this.ref.orderByChild("path").on("value", (snapshot) => {
             let parsed = this._parse(snapshot.val());
             this._sort(parsed);
 

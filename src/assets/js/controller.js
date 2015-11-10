@@ -1,7 +1,7 @@
 export class NodeEditorCtrl {
     constructor($rootScope, $mdDialog, node, domainUsers) {
         this.$mdDialog = $mdDialog;
-        this.node = node;
+        this.node = angular.copy(node);
         this.domainUsers = domainUsers;
         this.$rootScope = $rootScope;
 
@@ -37,7 +37,7 @@ export class NodeEditorCtrl {
     }
 
     cancel() {
-        this.$mdDialog.hide();
+        this.$mdDialog.cancel();
     }
 
     save() {
@@ -110,8 +110,15 @@ export class MainCtrl {
             targetEvent: evt,
             locals: { "node": node, "domainUsers": this.domainUsers }
         }).then((data) => {
-            this.$rootScope.api.getNodeRef(node).update(data);
-        }, () => { console.log("cancelled"); });
+            this.$rootScope.api.getNodeRef(node).update(data, (error) => {
+                if (error) {
+                    throw error;
+                }
+                else {
+                    this.loadTree();
+                }
+            });
+        });
     }
 
     /**
@@ -131,7 +138,7 @@ export class MainCtrl {
                 let newNodePath = target.path + this.indexToPath(newNodeIndex);
 
                 // insert new node
-                this.addNode(data.title, data.leader, data.level, newNodePath, () => {
+                this.addNode(data.title, data.leaders, data.level, newNodePath, () => {
                     this.loadTree();
                 });
             });
@@ -163,7 +170,7 @@ export class MainCtrl {
 
                 // insert new node
                 let newNodePath = pos === "left" ? target.path : this.getPathByShiftingIndex(target, 1);
-                this.addNode(data.title, data.leader, data.level, newNodePath);
+                this.addNode(data.title, data.leaders, data.level, newNodePath);
 
                 // includes target node into right siblings if pos === 'left'
                 if (pos === "left") {
@@ -229,14 +236,77 @@ export class MainCtrl {
      * The position of target node to move to.
      */
     moveTo(target, pos) {
-        this.$rootScope.api.getDescendants(target).then((descendants) => {
+        // update right siblings of original node
+        this.$rootScope.api.getSiblings(this.moveNodes[0]).then((siblings) => {
+            let rightSiblings = [],
+                nodeIndex = this.getNodeIndex(this.moveNodes[0]);
 
+            // get right siblings of node
+            for (let n of siblings) {
+                if (this.getNodeIndex(n) > nodeIndex) {
+                    rightSiblings.push(n);
+                }
+            }
+
+            // update path of right siblings
+            for (let n of rightSiblings) {
+                this.updatePath(n, this.getPathByShiftingIndex(n, -1));
+            }
         });
+
+        // updated moving nodes and related nodes of target
         if (pos === "child") {
+            this.$rootScope.api.getChildren(target).then((children) => {
+                // calculate new path
+                let newIndex = children.length > 0 ? this.getNodeIndex(children[children.length - 1]) + 1 : 1,
+                    newPath = target.path + this.indexToPath(newIndex),
+                    oNodePath = this.moveNodes[0].path;
 
+                // update nodes' path
+                for (let n of this.moveNodes) {
+                    let nNewPath = newPath + n.path.substr(oNodePath.length);
+                    this.$rootScope.api.getNodeRef(n).update({
+                        "path": nNewPath,
+                        "depth": this.getDepth(nNewPath)
+                    });
+                }
+            });
         }
-        else if (pos === "sibling:left" || pos === "sibling:right") {
+        else if (pos === "left" || pos === "right") {
+            this.$rootScope.api.getSiblings(target).then((siblings) => {
+                let rightSiblings = [],
+                    targetIndex = this.getNodeIndex(target);
 
+                // get right siblings of the target.
+                for (let n of siblings) {
+                    if (this.getNodeIndex(n) > targetIndex) {
+                        rightSiblings.push(n);
+                    }
+                }
+
+                // calculate new path
+                let newPath = pos === "left" ? target.path : this.getPathByShiftingIndex(target, 1),
+                    oNodePath = this.moveNodes[0].path;
+
+                // update moving nodes
+                for (let n of this.moveNodes) {
+                    let nNewPath = newPath + n.path.substr(oNodePath.length);
+                    this.$rootScope.api.getNodeRef(n).update({
+                        "path": nNewPath,
+                        "depth": this.getDepth(nNewPath)
+                    });
+                }
+
+                // includes target node into right siblings if pos === 'left'
+                if (pos === "left") {
+                    rightSiblings.splice(0, 0, target);
+                }
+
+                // update related nodes of target
+                for (let n of rightSiblings) {
+                    this.updatePath(n, this.getPathByShiftingIndex(n, 1));
+                }
+            });
         }
     }
 
