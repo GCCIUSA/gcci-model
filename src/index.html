@@ -129,7 +129,7 @@
             </md-menu>
 
             <md-menu ng-if="main.moveNodes">
-                <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)" aria-label="Move Menu">
+                <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)" aria-label="Move Menu" ng-class="{'hidden': !main.isValidMoveToTarget(node)}">
                     <md-icon md-font-icon="fa-ellipsis-v" class="fa"></md-icon>
                 </md-button>
 
@@ -150,6 +150,13 @@
                         <md-button ng-click="main.moveTo(node, 'child')" aria-label="as child">
                             <md-icon md-font-icon="fa-long-arrow-right rotate45" class="fa" md-menu-align-target></md-icon>
                             as child
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-divider></md-menu-divider>
+                    <md-menu-item>
+                        <md-button ng-click="main.cancelMove()" aria-label="cancel move">
+                            <md-icon md-font-icon="fa-ban" class="fa" md-menu-align-target></md-icon>
+                            cancel move
                         </md-button>
                     </md-menu-item>
                 </md-menu-content>

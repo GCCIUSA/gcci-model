@@ -20,6 +20,7 @@ var jsSrc = function (isRelease) {
         assetPath + "/libs/firebase/angularfire.min.js",
         assetPath + "/libs/angular/angular-aria.min.js",
         assetPath + "/libs/angular/angular-animate.min.js",
+        assetPath + "/libs/angular/angular-messages.min.js",
         assetPath + "/libs/angular-material/angular-material.min.js"
     ]);
 

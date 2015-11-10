@@ -1,5 +1,5 @@
 <md-dialog aria-label="Node Editor" ng-cloak>
-    <form>
+    <form name="nodeEditorForm">
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <h2>Add Node</h2>
@@ -16,13 +16,19 @@
                 <div layout>
                     <md-input-container flex>
                         <label>Title</label>
-                        <input type="text" ng-model="nodeEditor.node.title" md-autofocus/>
+                        <input type="text" name="title" ng-model="nodeEditor.node.title" required/>
+                        <div ng-messages="nodeEditorForm.title.$error">
+                            <div ng-message="required">Title is required</div>
+                        </div>
                     </md-input-container>
                     <md-input-container flex>
                         <label>Level</label>
-                        <md-select ng-model="nodeEditor.node.level">
+                        <md-select name="level" ng-model="nodeEditor.node.level" required>
                             <md-option ng-repeat="level in nodeEditor.levels" value="{{level}}">{{level}}</md-option>
                         </md-select>
+                        <div ng-messages="nodeEditorForm.level.$error">
+                            <div ng-message="required">Level is required</div>
+                        </div>
                     </md-input-container>
                 </div>
                 <h4>Leaders</h4>
@@ -47,7 +53,7 @@
             <md-button ng-click="nodeEditor.cancel()">
                 Cancel
             </md-button>
-            <md-button class="md-primary" ng-click="nodeEditor.save()">
+            <md-button class="md-primary" ng-click="nodeEditor.save(nodeEditorForm.$valid)">
                 Save
             </md-button>
         </div>

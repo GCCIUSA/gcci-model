@@ -3,7 +3,7 @@ import { UtilService, AuthService, UserService } from "./service";
 import { NodeEditorCtrl, MainCtrl } from "./controller";
 
 
-let app = angular.module("app", ["ngMaterial", "firebase"]);
+let app = angular.module("app", ["ngMaterial", "ngMessages", "firebase"]);
 
 app.config(["$httpProvider",
     ($httpProvider) => {
