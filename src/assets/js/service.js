@@ -41,26 +41,37 @@ export class AuthService {
         let deferred = this.$q.defer();
 
         // check if firebase token is valid
-        let authData = this.fbAuth.$getAuth();
-        if (authData) { // firebase token is valid
-            // check if google token is valid
-            let url = `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${authData.google.accessToken}`;
-            this.$http.get(url).then(
-                () => { // google token is valid
-                    this.$rootScope.user = authData;
-                    deferred.resolve(true);
-                },
-                (error) => { // google token is invalid
-                    if (error.data.error === "invalid_token") {
-                        // this.login();
+        this.authInProgress = true;
+        this.fbAuth.$onAuth((authData) => {
+            if (authData) { // firebase token is valid
+                // check if google token is valid
+                let url = `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${authData.google.accessToken}`;
+                this.$http.get(url).then(
+                    () => { // google token is valid
+                        this.authInProgress = false;
+                        this.$rootScope.user = authData;
+                        deferred.resolve(true);
+                    },
+                    (error) => { // google token is invalid
+                        this.authInProgress = false;
+                        if (error.data.error === "invalid_token") {
+                            this.$mdDialog.show(
+                                this.$mdDialog.alert()
+                                    .title('Error')
+                                    .content('Authentication timed out, please login again.')
+                                    .ariaLabel('Authentication timed out')
+                                    .ok('Close')
+                            );
+                        }
+                        deferred.reject(error);
                     }
-                    deferred.reject(error);
-                }
-            );
-        }
-        else { // firebase token is invalid
-            deferred.reject();
-        }
+                );
+            }
+            else { // firebase token is invalid
+                this.authInProgress = false;
+                deferred.reject();
+            }
+        });
 
         return deferred.promise;
     }
@@ -73,14 +84,12 @@ export class AuthService {
             ].join(" ")
         };
 
-        this.fbAuth.$authWithOAuthPopup("google", options).then(() => {
-            window.location.reload();
-        }).catch(() => {
+        this.fbAuth.$authWithOAuthRedirect("google", options).catch(() => {
             this.$mdDialog.show(
                 this.$mdDialog.alert()
                     .title('Error')
-                    .content('Login failed, please try again.')
-                    .ariaLabel('Login Failed')
+                    .content('Authentication failed, please try again.')
+                    .ariaLabel('Authentication failed')
                     .ok('Close')
             );
         });

@@ -68,9 +68,14 @@
 <div layout layout-align="space-around start">
     <!-- user is not logged in -->
     <div ng-if="!user">
-        <h3>Oops! You are not logged in!</h3>
-        <p>You are either not logged in or the user authenticatation service is timed out.</p>
-        <p>Please log in again.</p>
+        <div ng-if="!main.authService.authInProgress">
+            <h3>Oops! You are not logged in!</h3>
+            <p>You are either not logged in or the user authenticatation service is timed out.</p>
+            <p>Please log in again.</p>
+        </div>
+        <div ng-if="main.authService.authInProgress">
+            <h3>Authenticating is in progress...</h3>
+        </div>
     </div>
 
     <!-- user is logged in -->
