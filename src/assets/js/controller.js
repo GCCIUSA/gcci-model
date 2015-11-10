@@ -257,12 +257,12 @@ export class MainCtrl {
         // updated moving nodes and related nodes of target
         if (pos === "child") {
             this.$rootScope.api.getChildren(target).then((children) => {
-                // calculate new path
+                // calculate new path of moving nodes
                 let newIndex = children.length > 0 ? this.getNodeIndex(children[children.length - 1]) + 1 : 1,
                     newPath = target.path + this.indexToPath(newIndex),
                     oNodePath = this.moveNodes[0].path;
 
-                // update nodes' path
+                // update moving nodes
                 for (let n of this.moveNodes) {
                     let nNewPath = newPath + n.path.substr(oNodePath.length);
                     this.$rootScope.api.getNodeRef(n).update({
@@ -284,7 +284,7 @@ export class MainCtrl {
                     }
                 }
 
-                // calculate new path
+                // calculate new path of moving nodes
                 let newPath = pos === "left" ? target.path : this.getPathByShiftingIndex(target, 1),
                     oNodePath = this.moveNodes[0].path;
 
