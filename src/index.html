@@ -5,6 +5,7 @@
     <title>GCCI Model</title>
 
     <link rel="stylesheet" type="text/css" href="assets/gen/css/app.min.css"/>
+    <script src="assets/gen/js/app.js"></script>
 </head>
 <body ng-controller="MainCtrl as main" ng-cloak>
 
@@ -74,7 +75,7 @@
             <p>Please log in again.</p>
         </div>
         <div ng-if="main.authService.authInProgress">
-            <h3>Authenticating is in progress...</h3>
+            <h3><i class="fa fa-cog fa-spin"></i> Authenticating is in progress...</h3>
         </div>
     </div>
 
@@ -159,6 +160,5 @@
     <div></div>
 </div>
 
-<script src="assets/gen/js/app.js"></script>
 </body>
 </html>

@@ -98,7 +98,6 @@ export class AuthService {
     logout() {
         delete this.$rootScope.user;
         this.fbAuth.$unauth();
-        window.location.reload();
     }
 }
 
