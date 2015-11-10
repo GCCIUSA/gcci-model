@@ -72,11 +72,6 @@ export class MainCtrl {
             });
         });
     }
-
-    logout() {
-        this.authService.logout();
-    }
-
     getLeaderName(node) {
         if (this.domainUsers && node.leader) {
             for (let dUser of this.domainUsers) {

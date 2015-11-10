@@ -17,10 +17,11 @@ UtilService.$inject = ["$mdToast"];
 
 
 export class AuthService {
-    constructor($rootScope, $firebaseAuth, $http, $q) {
+    constructor($rootScope, $firebaseAuth, $http, $q, $mdDialog) {
         this.$rootScope = $rootScope;
         this.$http = $http;
         this.$q = $q;
+        this.$mdDialog = $mdDialog;
 
         this.fbAuth = $firebaseAuth($rootScope.ref);
     }
@@ -51,14 +52,13 @@ export class AuthService {
                 },
                 (error) => { // google token is invalid
                     if (error.data.error === "invalid_token") {
-                        this.login();
+                        // this.login();
                     }
                     deferred.reject(error);
                 }
             );
         }
         else { // firebase token is invalid
-            this.login();
             deferred.reject();
         }
 
@@ -76,7 +76,13 @@ export class AuthService {
         this.fbAuth.$authWithOAuthPopup("google", options).then(() => {
             window.location.reload();
         }).catch(() => {
-            alert("User Login Failed");
+            this.$mdDialog.show(
+                this.$mdDialog.alert()
+                    .title('Error')
+                    .content('Login failed, please try again.')
+                    .ariaLabel('Login Failed')
+                    .ok('Close')
+            );
         });
     }
 
@@ -87,7 +93,7 @@ export class AuthService {
     }
 }
 
-AuthService.$inject = ["$rootScope", "$firebaseAuth", "$http", "$q"];
+AuthService.$inject = ["$rootScope", "$firebaseAuth", "$http", "$q", "$mdDialog"];
 
 
 

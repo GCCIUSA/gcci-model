@@ -38,9 +38,13 @@
         </div>
     </div>
     <div>
-        <md-menu>
+        <md-button class="md-mini" ng-if="!user" ng-click="main.authService.login()">
+            Log In
+        </md-button>
+
+        <md-menu ng-if="user">
             <md-button class="md-mini" ng-click="$mdOpenMenu($event)">
-                {{user ? user.google.displayName : "Log In"}} <i class="fa fa-caret-down btn-icon btn-icon-right"></i>
+                {{user.google.displayName}} <i class="fa fa-caret-down btn-icon btn-icon-right"></i>
             </md-button>
             <md-menu-content width="3">
                 <md-menu-item>
@@ -51,7 +55,7 @@
                 </md-menu-item>
                 <md-menu-divider></md-menu-divider>
                 <md-menu-item>
-                    <md-button ng-click="main.logout()">
+                    <md-button ng-click="main.authService.logout()">
                         <md-icon md-font-icon="fa-sign-out" class="fa" md-menu-align-target></md-icon>
                         Log Out
                     </md-button>
@@ -62,7 +66,15 @@
 </md-toolbar>
 
 <div layout layout-align="space-around start">
-    <div layout="column" layout-align="start start" class="model-tree">
+    <!-- user is not logged in -->
+    <div ng-if="!user">
+        <h3>Oops! You are not logged in!</h3>
+        <p>You are either not logged in or the user authenticatation service is timed out.</p>
+        <p>Please log in again.</p>
+    </div>
+
+    <!-- user is logged in -->
+    <div ng-if="user" layout="column" layout-align="start start" class="model-tree">
         <div ng-repeat="node in main.tree" ng-style="main.getIndentation(node.depth)" ng-if="node.depth > 1">
             <md-menu ng-if="!main.moveNodes">
                 <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)" aria-label="Menu">
@@ -139,11 +151,7 @@
             <span>{{node.title}} {{main.getLeaderName(node)}} ({{node.path}}) ({{node.depth}})</span>
         </div>
     </div>
-    <div>
-        <md-button class="md-fab" aria-label="Add" ng-click="main.addTemp()">
-            <md-icon md-font-icon="fa-plus" class="fa"></md-icon>
-        </md-button>
-    </div>
+    <div></div>
 </div>
 
 <script src="assets/gen/js/app.js"></script>
