@@ -81,7 +81,7 @@
 
     <!-- user is logged in -->
     <div ng-if="user" layout="column" layout-align="start start" class="model-tree">
-        <div ng-repeat="node in main.tree" ng-style="main.getIndentation(node.depth)" ng-if="node.depth > 1">
+        <div ng-repeat="node in main.tree track by node.$id" ng-style="main.getIndentation(node.depth)" ng-if="node.depth > 1">
             <md-menu ng-if="!main.moveNodes">
                 <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)" aria-label="Menu">
                     <md-icon md-font-icon="fa-ellipsis-v" class="fa"></md-icon>

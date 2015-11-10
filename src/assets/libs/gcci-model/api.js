@@ -62,7 +62,7 @@ export class API {
      * @returns {Object} firebase reference.
      */
     getNodeRef(node) {
-        return this._ref.child(node.id);
+        return this._ref.child(node.$id);
     }
 
     /**
@@ -223,7 +223,7 @@ export class API {
         if (snapshotVal) {
             for (let key of Object.keys(snapshotVal)) {
                 let obj = snapshotVal[key];
-                obj["id"] = key;
+                obj["$id"] = key;
                 parsed.push(obj);
             }
         }

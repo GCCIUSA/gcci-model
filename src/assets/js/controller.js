@@ -53,13 +53,14 @@ NodeEditorCtrl.$inject = ["$rootScope", "$mdDialog", "node", "domainUsers"];
 
 
 export class MainCtrl {
-    constructor($rootScope, utilService, $mdDialog, $http, authService, userService) {
+    constructor($rootScope, utilService, $mdDialog, $http, authService, userService, $firebaseArray) {
         this.$rootScope = $rootScope;
         this.utilService = utilService;
         this.$mdDialog = $mdDialog;
         this.$http = $http;
         this.authService = authService;
         this.userService = userService;
+        this.$firebaseArray = $firebaseArray;
 
         this.init();
     }
@@ -72,6 +73,7 @@ export class MainCtrl {
             });
         });
     }
+
     getLeaderName(node) {
         if (this.domainUsers && node.leader) {
             for (let dUser of this.domainUsers) {
@@ -83,11 +85,7 @@ export class MainCtrl {
     }
 
     loadTree() {
-        this.$rootScope.api.getTree().then((data) => {
-            this.$rootScope.$apply(() => {
-                this.tree = data;
-            });
-        });
+        this.tree = this.$firebaseArray(this.$rootScope.ref.orderByChild("path"));
     }
 
     getIndentation(depth) {
@@ -108,9 +106,6 @@ export class MainCtrl {
             this.$rootScope.api.getNodeRef(node).update(data, (error) => {
                 if (error) {
                     throw error;
-                }
-                else {
-                    this.loadTree();
                 }
             });
         });
@@ -133,9 +128,7 @@ export class MainCtrl {
                 let newNodePath = target.path + this.indexToPath(newNodeIndex);
 
                 // insert new node
-                this.addNode(data.title, data.leaders, data.level, newNodePath, () => {
-                    this.loadTree();
-                });
+                this.addNode(data.title, data.leaders, data.level, newNodePath);
             });
         });
     }
@@ -303,13 +296,15 @@ export class MainCtrl {
                 }
             });
         }
+
+        this.cancelMove();
     }
 
     /**
      * Cancels move operation.
      */
     cancelMove() {
-        this.moveNode = null;
+        this.moveNodes = null;
     }
 
     /**
@@ -371,4 +366,4 @@ export class MainCtrl {
     }
 }
 
-MainCtrl.$inject = ["$rootScope", "utilService", "$mdDialog", "$http", "authService", "userService"];
+MainCtrl.$inject = ["$rootScope", "utilService", "$mdDialog", "$http", "authService", "userService", "$firebaseArray"];
