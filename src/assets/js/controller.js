@@ -409,9 +409,9 @@ export class MainCtrl {
 
     getLeadersName(leaders) {
         if (leaders && this.domainUsers) {
-            return this.domainUsers.filter(dUser => leaders.indexOf(`google:${dUser.id}`) >= 0).map((dUser) => {
-                return dUser.name.fullName;
-            }).join(", ");
+            return this.domainUsers.filter(dUser => leaders.indexOf(`google:${dUser.id}`) >= 0)
+                                   .map(dUser => dUser.name.fullName)
+                                   .join(", ");
         }
     }
 
