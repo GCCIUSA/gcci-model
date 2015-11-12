@@ -407,6 +407,14 @@ export class MainCtrl {
         });
     }
 
+    getLeadersName(leaders) {
+        if (leaders && this.domainUsers) {
+            return this.domainUsers.filter(dUser => leaders.indexOf(`google:${dUser.id}`) >= 0).map((dUser) => {
+                return dUser.name.fullName;
+            }).join(", ");
+        }
+    }
+
     getNodeIndex(node) {
         return parseInt(node.path.substr(node.path.length - 4));
     }

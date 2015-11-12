@@ -161,7 +161,15 @@
                     </md-menu-item>
                 </md-menu-content>
             </md-menu>
-            <span>{{node.title}} {{main.getLeaderName(node)}} ({{node.path}}) ({{node.depth}})</span>
+            <span>
+                {{node.title}}
+                <span ng-if="node.level" class="helper">
+                    {{node.level}} {{node.leaders ? "-" : ""}} {{main.getLeadersName(node.leaders)}}
+                </span>
+
+                <!-- debugging info -->
+                <!-- {{main.getLeaderName(node)}} ({{node.path}}) ({{node.depth}}) -->
+            </span>
         </div>
     </div>
     <div></div>
