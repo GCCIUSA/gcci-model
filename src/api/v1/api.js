@@ -5,7 +5,19 @@
  */
 export class API {
     constructor(ref) {
-        this.ref = ref;
+        this._ref = ref;
+
+        this._LEVELS = ["牧區", "區", "實習區", "小組", "福音站"];
+    }
+
+    /**
+     * Retrieves all levels.
+     *
+     * @method getLevels
+     * @returns {Array} all levels.
+     */
+    getLevels() {
+        return this._LEVELS;
     }
 
     /**
@@ -18,7 +30,7 @@ export class API {
     getNodeById(id) {
         let deferred = $.Deferred();
 
-        this.ref.orderByKey().equalTo(id).once("child_added", (snapshot) => {
+        this._ref.orderByKey().equalTo(id).once("child_added", (snapshot) => {
             deferred.resolve(snapshot.val());
         });
 
@@ -35,7 +47,7 @@ export class API {
     getNodeByPath(path) {
         let deferred = $.Deferred();
 
-        this.ref.orderByChild("path").equalTo(path).once("child_added", (snapshot) => {
+        this._ref.orderByChild("path").equalTo(path).once("child_added", (snapshot) => {
             deferred.resolve(snapshot.val());
         });
 
@@ -50,7 +62,7 @@ export class API {
      * @returns {Object} firebase reference.
      */
     getNodeRef(node) {
-        return this.ref.child(node.id);
+        return this._ref.child(node.$id);
     }
 
     /**
@@ -62,7 +74,7 @@ export class API {
     getTree() {
         let deferred = $.Deferred();
 
-        this.ref.orderByChild("path").on("value", (snapshot) => {
+        this._ref.orderByChild("path").once("value", (snapshot) => {
             let parsed = this._parse(snapshot.val());
             this._sort(parsed);
 
@@ -86,7 +98,7 @@ export class API {
             deferred.resolve(null);
         }
         else {
-            this.ref.orderByChild("path").equalTo(this._calcParentPath(node)).once("child_added", (snapshot) => {
+            this._ref.orderByChild("path").equalTo(this._getParentPath(node)).once("child_added", (snapshot) => {
                 deferred.resolve(snapshot.val());
             });
         }
@@ -105,7 +117,7 @@ export class API {
     getChildren(node) {
         let deferred = $.Deferred();
 
-        this.ref.orderByChild("depth").equalTo(node.depth + 1).once("value", (snapshot) => {
+        this._ref.orderByChild("depth").equalTo(node.depth + 1).once("value", (snapshot) => {
             let children = [], parsed = this._parse(snapshot.val());
             for (let item of parsed) {
                 if (item.path.substr(0, node.path.length) === node.path) {
@@ -130,7 +142,7 @@ export class API {
     getDescendants(node) {
         let deferred = $.Deferred();
 
-        this.ref.orderByChild("depth").startAt(node.depth + 1).once("value", (snapshot) => {
+        this._ref.orderByChild("depth").startAt(node.depth + 1).once("value", (snapshot) => {
             let descendants = [], parsed = this._parse(snapshot.val());
             for (let item of parsed) {
                 if (item.path.substr(0, node.path.length) === node.path) {
@@ -150,24 +162,50 @@ export class API {
      *
      * @method getSiblings
      * @param node node object.
+     * @param side 'left' or 'right' side of siblings, not including itself.
+     * @param inclSelf whether to include node itself when side param is defined.
      * @returns {Promise} array of siblings
      */
-    getSiblings(node) {
+    getSiblings(node, side, inclSelf) {
         let deferred = $.Deferred();
 
-        this.ref.orderByChild("depth").equalTo(node.depth).once("value", (snapshot) => {
-            let siblings = [], parsed = this._parse(snapshot.val());
+        this._ref.orderByChild("depth").equalTo(node.depth).once("value", (snapshot) => {
+            let siblings = [],
+                parsed = this._parse(snapshot.val()),
+                nodeIndex = this._getNodeIndex(node);
+
             for (let item of parsed) {
-                if (this._calcParentPath(item) === this._calcParentPath(node)) {
+                if (this._getParentPath(item) === this._getParentPath(node)) {
                     siblings.push(item);
                 }
             }
             this._sort(siblings);
 
-            deferred.resolve(siblings);
+            if (side === "left") {
+                if (inclSelf) { nodeIndex++; }
+                deferred.resolve(siblings.filter(sibling => this._getNodeIndex(sibling) < nodeIndex));
+            }
+            else if (side === "right") {
+                if (inclSelf) { nodeIndex--; }
+                deferred.resolve(siblings.filter(sibling => this._getNodeIndex(sibling) > nodeIndex));
+            }
+            else {
+                deferred.resolve(siblings);
+            }
         });
 
         return deferred.promise();
+    }
+
+    /**
+     * Gets index position of given node within its siblings.
+     *
+     * @param node given node.
+     * @returns {Number} index position.
+     * @private
+     */
+    _getNodeIndex(node) {
+        return parseInt(node.path.substr(node.path.length - 4));
     }
 
     /**
@@ -183,18 +221,30 @@ export class API {
     }
 
     /**
-     * Calculates parent node's path of given node.
+     * Gets parent node's path of given node.
      *
-     * @method _calcParentPath
+     * @method _getParentPath
      * @param node given node.
      * @returns {*} parent node's path, null if give node is root node.
      * @private
      */
-    _calcParentPath(node) {
+    _getParentPath(node) {
         if (this._isRoot(node)) {
             return null;
         }
         return node.path.substr(0, node.path.length - 4);
+    }
+
+    /**
+     * Determines if given nodes are siblings.
+     *
+     * @method _isSiblingOf
+     * @param node1 first node.
+     * @param node2 second node.
+     * @private
+     */
+    _isSiblingOf(node1, node2) {
+        return this._getParentPath(node1) === this._getParentPath(node2);
     }
 
     /**
@@ -211,7 +261,7 @@ export class API {
         if (snapshotVal) {
             for (let key of Object.keys(snapshotVal)) {
                 let obj = snapshotVal[key];
-                obj["id"] = key;
+                obj["$id"] = key;
                 parsed.push(obj);
             }
         }

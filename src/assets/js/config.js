@@ -1,4 +1,4 @@
-import { API } from "../libs/gcci-model/api";
+import { API } from "../../api/v1/api";
 import { UtilService, AuthService, UserService } from "./service";
 import { NodeEditorCtrl, MainCtrl } from "./controller";
 
