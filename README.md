@@ -17,8 +17,3 @@ compile static files with one of the following commands:
 ## Local Server
 1. run `node server` to start local server
 2. launch browser and access the site `http://localhost:8080`
-
-## Deployment
-0. run `npm install -g firebase-tools` to install Firebase tools
-1. run `firebase deploy`
-2. launch browser and access the site `https://gcci-model.firebaseapp.com`
