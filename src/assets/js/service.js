@@ -115,14 +115,22 @@ export class UserService {
     getAllUsers() {
         let deferred = this.$q.defer();
 
-        this.$http.get(
+        let thegcci_org = this.$http.get(
             "https://www.googleapis.com/admin/directory/v1/users?domain=thegcci.org",
             this.getHttpConfig()
-        ).then((response) => {
-            deferred.resolve(response.data.users);
-        }).catch((error) => {
-            deferred.reject(error);
-        });
+        );
+
+        let mygcci_org = this.$http.get(
+            "https://www.googleapis.com/admin/directory/v1/users?domain=mygcci.org",
+            this.getHttpConfig()
+        );
+
+        this.$q.all([thegcci_org, mygcci_org])
+            .then((response) => {
+                deferred.resolve(response[0].data.users.concat(response[1].data.users));
+            }).catch((error) => {
+                deferred.reject(error);
+            });
 
         return deferred.promise;
     }

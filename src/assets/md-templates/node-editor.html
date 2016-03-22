@@ -39,7 +39,7 @@
                                      md-item-text="item.name.fullName"
                                      placeholder="find..."
                                      md-autoselect>
-                        <span md-highlight-text="nodeEditor.leaderSearchText">{{item.name.fullName}}</span>
+                        <span md-highlight-text="nodeEditor.leaderSearchText">{{item.name.fullName}} {{nodeEditor.userIndicator(item)}}</span>
                     </md-autocomplete>
                     <md-chip-template>
                         <span>{{$chip.name.fullName}}</span>

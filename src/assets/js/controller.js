@@ -49,6 +49,12 @@ export class NodeEditorCtrl {
             });
         }
     }
+
+    userIndicator(user) {
+        if (user.primaryEmail.indexOf("@thegcci.org") > 0) {
+            return "*";
+        }
+    }
 }
 
 NodeEditorCtrl.$inject = ["$rootScope", "$mdDialog", "node", "domainUsers"];
