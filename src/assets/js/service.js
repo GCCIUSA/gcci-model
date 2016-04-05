@@ -116,12 +116,12 @@ export class UserService {
         let deferred = this.$q.defer();
 
         let thegcci_org = this.$http.get(
-            "https://www.googleapis.com/admin/directory/v1/users?domain=thegcci.org",
+            "https://www.googleapis.com/admin/directory/v1/users?domain=thegcci.org&maxResults=300",
             this.getHttpConfig()
         );
 
         let mygcci_org = this.$http.get(
-            "https://www.googleapis.com/admin/directory/v1/users?domain=mygcci.org",
+            "https://www.googleapis.com/admin/directory/v1/users?domain=mygcci.org&maxResults=300",
             this.getHttpConfig()
         );
 

@@ -1,5 +1,5 @@
 {
-  "firebase": "gcci-model",
+  "firebase": "gcci-t-structure-model",
   "public": "src",
   "ignore": [
     "firebase.json",

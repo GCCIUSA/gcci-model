@@ -19,7 +19,7 @@ app.config(["$httpProvider",
 
 app.run(["$rootScope",
     ($rootScope) => {
-        $rootScope.ref = new Firebase("https://gcci-model.firebaseio.com");
+        $rootScope.ref = new Firebase("https://gcci-t-structure-model.firebaseio.com");
         $rootScope.api = new API($rootScope.ref);
     }
 ]);
