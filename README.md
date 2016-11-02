@@ -6,7 +6,7 @@
 ## Development Set Up
 1. clone repository
 2. navigate into directory
-3. run `npm install -g gulp` to install gulp
+3. run `npm install -g gulp-cli` to install gulp
 4. run `npm install` to install local node.js modules
 
 ## Start Developing
